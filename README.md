@@ -1,2 +1,1 @@
-# SistemaSismos
-Sistema de Alerta y Visualización de  Sismos
+# Sistema de Alerta y Visualización de  Sismos
