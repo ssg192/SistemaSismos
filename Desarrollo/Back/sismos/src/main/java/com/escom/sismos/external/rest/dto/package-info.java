@@ -1,1 +1,0 @@
-package com.escom.sismos.external.rest.dto;

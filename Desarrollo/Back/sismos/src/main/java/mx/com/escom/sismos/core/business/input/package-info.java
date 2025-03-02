@@ -1,0 +1,1 @@
+package mx.com.escom.sismos.core.business.input;
