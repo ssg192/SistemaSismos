@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login y Registro</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css?family=Poppins:300');
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(#1e3c72, #2a5298);
+        }
+
+        .login-page {
+            width: 400px;
+            padding: 8% 0 0;
+            margin: auto;
+        }
+
+        .form {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            padding: 40px;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.6);
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .form input {
+            width: 100%;
+            padding: 10px 0;
+            font-size: 13px;
+            color: #fff;
+            margin-bottom: 30px;
+            border: none;
+            border-bottom: 1px solid #f1c40f;
+            outline: none;
+            background: transparent;
+        }
+
+        h2 {
+            color: white;
+        }
+
+        .form .message {
+            margin: 15px 0 0;
+            color: #f1c40f;
+            font-size: 12px;
+        }
+
+        .form .message a {
+            color: #f39c12;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .register-form {
+            display: none;
+        }
+
+        /* Botón con animaciones */
+        .btn {
+            position: relative;
+            display: inline-block;
+            padding: 10px 20px;
+            color: #f1c40f;
+            font-size: 16px;
+            text-decoration: none;
+            overflow: hidden;
+            transition: .5s;
+            margin-top: 15px;
+            letter-spacing: 2px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #f1c40f;
+            color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 5px #f1c40f,
+            0 0 25px #f1c40f,
+            0 0 50px #f1c40f,
+            0 0 100px #f1c40f;
+        }
+    </style>
+</head>
+<body>
+<div class="login-page">
+    <div class="form">
+        <form class="register-form" id="registroForm">
+            <h2>Registro</h2>
+            <input type="text" id="nombre" placeholder="Nombre completo" required/>
+            <input type="email" id="email" placeholder="Correo electrónico" required/>
+            <input type="password" id="password" placeholder="Contraseña" required/>
+            <button class="btn" type="submit">Crear cuenta</button>
+            <p class="message">¿Ya tienes cuenta? <a href="#">Inicia sesión</a></p>
+        </form>
+        <form class="login-form" id="loginForm">
+            <h2>Iniciar sesión</h2>
+            <input type="text" id="loginEmail" placeholder="Correo electrónico" required/>
+            <input type="password" id="loginPassword" placeholder="Contraseña" required/>
+            <button class="btn" type="submit">Ingresar</button>
+            <p class="message">¿No tienes cuenta? <a href="#">Regístrate</a></p>
+        </form>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function(){
+        $('.message a').click(function(event){
+            event.preventDefault();
+            $('form').animate({ height: "toggle", opacity: "toggle" }, "slow");
+        });
+
+        $("#registroForm").submit(function(event) {
+            event.preventDefault();
+            let datosRegistro = {
+                nombre: $("#nombre").val(),
+                email: $("#email").val(),
+                password: $("#password").val()
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "http://localhost:8080/inicio/registrarse",
+                contentType: "application/json",
+                data: JSON.stringify(datosRegistro),
+                success: function(response) {
+                    alert("Registro exitoso. Ahora puedes iniciar sesión.");
+                    $(".message a").click(); // Cambia a la vista de inicio de sesión
+                },
+                error: function() {
+                    alert("Error en el registro. Inténtalo de nuevo.");
+                }
+            });
+        });
+
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            let email = document.getElementById('loginEmail').value;
+            let password = document.getElementById('loginPassword').value;
+
+            let datosLogin = {
+                email: email,
+                password: password
+            };
+
+            fetch('http://localhost:8080/inicio/iniciarsesion', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(datosLogin)
+            })
+                .then(response => {
+                    console.log("Estado de la respuesta:", response.status);
+
+                    if (!response.ok) {
+                        throw new Error('Error en el inicio de sesión');
+                    }
+
+                    return response.text();
+                })
+                .then(data => {
+
+                    const token = data;
+
+                    try {
+                        const decodedToken = jwt_decode(token);
+
+                        const roles = decodedToken.groups;
+
+                        localStorage.setItem('authToken', token);
+
+                        if (roles && roles.includes('ROLE_ADMIN')) {
+                            window.location.href = 'http://localhost:8080/inicio/admin';
+                        } else {
+                            window.location.href = 'http://localhost:8080/inicio/usuario';
+                        }
+
+                        alert('Inicio de sesión exitoso.');
+                    } catch (error) {
+                        console.error("Error al decodificar el token:", error);
+                        alert('Hubo un error al procesar el token.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error en el inicio de sesión:', error);
+                    alert('Credenciales incorrectas. Inténtalo de nuevo.');
+                });
+        });
+
+    });
+</script>
+
+</body>
+</html>

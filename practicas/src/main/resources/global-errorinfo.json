@@ -1,0 +1,16 @@
+{
+	"erroresInformacion": [
+		{
+			"code": "RNS001",
+			"message": "Error de sistema: error desconocido"
+		},
+		{
+			"code": "RNS002",
+			"message": "Error de sistema: error de la maquina de estados"
+		},
+		{
+			"code": "NOT_FOUND",
+			"message": "Error de sistema: entidad no encontrada"
+		}
+	]
+}

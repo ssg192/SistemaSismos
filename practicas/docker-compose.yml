@@ -1,0 +1,51 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: tarea2
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: admin
+    ports:
+      - "3306:3306"
+    networks:
+      - app-network
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./src/main/db:/docker-entrypoint-initdb.d  
+  app:
+    image: tarea3
+    container_name: tarea3-container-levantado
+    environment:
+      - QUARKUS_DATASOURCE_DB_KIND=mysql
+      - QUARKUS_DATASOURCE_USERNAME=admin
+      - QUARKUS_DATASOURCE_PASSWORD=admin
+      - QUARKUS_DATASOURCE_JDBC_URL=jdbc:mysql://db:3306/tarea2
+      - QUARKUS_HTTP_ACCESS_LOG_ENABLED=true
+      - QUARKUS_HIBERNATE_ORM_PACKAGES=mx.com.tarea3.Tarea.external.jpa.model
+      - QUARKUS_HIBERNATE_ORM_LOG_SQL=true
+      - MP_OPENAPI_EXTENSIONS_SMALLRYE_INFO_TITLE=tarea3
+      - MP_OPENAPI_EXTENSIONS_SMALLRYE_INFO_DESCRIPTION=API Rest que implementa el endpoint de inicio de sesion
+      - QUARKUS_SWAGGER_UI_DISPLAY_OPERATION_ID=true
+      - QUARKUS_SWAGGER_UI_THEME=original
+      - QUARKUS_SWAGGER_UI_ALWAYS_INCLUDE=true
+      - MP_JWT_VERIFY_PUBLICKEY_LOCATION=/deployments/config/publicKey.pem
+      - MP_JWT_VERIFY_ISSUER=tu_aplicacion
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    networks:
+      - app-network
+    volumes:
+      - ./src/main/resources:/deployments/config
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  mysql-data:
+    driver: local

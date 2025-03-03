@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalles de Usuario</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d1117;
+            margin: 0;
+            padding: 0;
+            color: #c9d1d9;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #161b22;
+            color: #c9d1d9;
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: start;
+            position: fixed;
+            height: 100%;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar a {
+            text-decoration: none;
+            color: #8b949e;
+            padding: 14px 25px;
+            margin: 10px 0;
+            display: block;
+            border-radius: 8px;
+            font-size: 18px;
+        }
+
+        .sidebar a:hover {
+            background-color: #21262d;
+        }
+
+        .container {
+            margin-left: 270px;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            background-color: #161b22;
+            width: calc(100% - 270px);
+            overflow-y: auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: #ffffff;
+            font-size: 28px;
+            margin-top: 30px;
+        }
+
+        .user-card {
+            margin: 20px;
+            padding: 15px;
+            background-color: #122f50;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(72, 117, 101, 0.2);
+        }
+
+        .user-info {
+            font-size: 18px;
+        }
+
+        .user-info p {
+            margin-bottom: 10px;
+        }
+
+        .user-info span {
+            font-weight: bold;
+        }
+
+        .action-buttons {
+            margin-top: 10px;
+        }
+
+        .action-buttons button {
+            background-color: #238636;
+            color: white;
+            padding: 10px 15px;
+            margin-right: 10px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .action-buttons button:hover {
+            background-color: #2ea043;
+        }
+
+        .action-buttons .delete-button {
+            background-color: #cf222e;
+        }
+
+        .action-buttons .delete-button:hover {
+            background-color: #a40e26;
+        }
+
+        .sidebar a:focus, .sidebar a:hover {
+            color: white;
+            background-color: #143756;
+        }
+
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(10, 56, 66, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: #21262d;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            box-shadow: 0 2px 10px rgba(0, 115, 115, 0.3);
+        }
+
+        .modal-content h2 {
+            margin-top: 0;
+            color: #ffffff;
+        }
+
+        .modal-content label {
+            display: block;
+            margin-bottom: 5px;
+            color: #c9d1d9;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
+            background-color: #161b22;
+            color: #c9d1d9;
+        }
+
+        .modal-content button {
+            background-color: #238636;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .modal-content button.cancel {
+            background-color: #cf222e;
+        }
+
+        .modal-content button:hover {
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="http://localhost:8080/inicio/admin">Perfil</a>
+    <a href="http://localhost:8080/inicio/admin/lista-usuarios">Usuarios</a>
+    <a style="background: #980a0a; color:white; font-weight: bold" href="#" id="logoutButton">Cerrar sesión</a>
+    <a style="background: #45a049; color:white; font-weight: bold" href="http://localhost:8080/inicio/admin/registrar">Registrar Usuario</a>
+</div>
+
+<div class="container">
+    <h1>Detalles de los Usuarios</h1>
+
+    <div id="usuarios-list">
+    </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <h2>Editar Usuario</h2>
+        <form id="editForm">
+            <label for="editNombre">Nombre:</label>
+            <input type="text" id="editNombre" name="nombre" required>
+
+            <label for="editEmail">Email:</label>
+            <input type="email" id="editEmail" name="email" required>
+
+            <label for="editPassword">Contraseña:</label>
+            <input type="password" id="editPassword" name="password" required>
+
+            <button type="submit">Guardar</button>
+            <button type="button" class="cancel" onclick="closeModal()">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            window.location.href = "http://localhost:8080/inicio/login";
+        }
+
+        document.getElementById('logoutButton').addEventListener('click', function(event) {
+            event.preventDefault();
+
+            localStorage.removeItem("authToken");
+
+            window.location.href = "http://localhost:8080/inicio/login";
+        });
+
+        fetch("http://localhost:8080/inicio/admin/usuarios", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener los detalles de los usuarios');
+                }
+                return response.json();
+            })
+            .then(usuarios => {
+                const usuariosListDiv = document.getElementById('usuarios-list');
+
+                if (usuarios && usuarios.length > 0) {
+                    usuarios.forEach(usuario => {
+                        const userCard = document.createElement('div');
+                        userCard.classList.add('user-card');
+
+                        const userInfo = document.createElement('div');
+                        userInfo.classList.add('user-info');
+
+                        const nombre = document.createElement('p');
+                        nombre.innerHTML = "<span>Nombre:</span> " + (usuario.nombre || "Nombre no disponible");
+                        userInfo.appendChild(nombre);
+
+                        const email = document.createElement('p');
+                        email.innerHTML = "<span>Email:</span> " + (usuario.email || "Email no disponible");
+                        userInfo.appendChild(email);
+
+                        const password = document.createElement('p');
+                        password.innerHTML = "<span>Contraseña:</span> " + (usuario.password || "Contraseña no disponible");
+                        userInfo.appendChild(password);
+
+                        const roles = document.createElement('p');
+                        roles.innerHTML = "<span>Rol: </span>" + (usuario.roles[0].nombre); // Accede al nombre del primer rol
+                        userInfo.appendChild(roles);
+
+                        userCard.appendChild(userInfo);
+
+                        const actionButtons = document.createElement('div');
+                        actionButtons.classList.add('action-buttons');
+
+                        const editButton = document.createElement('button');
+                        editButton.textContent = "Editar";
+                        editButton.setAttribute('data-id', usuario.id);
+                        actionButtons.appendChild(editButton);
+
+                        editButton.addEventListener('click', function() {
+                            const id = this.getAttribute('data-id');
+                            openModal(usuario);
+                        });
+
+                        const deleteButton = document.createElement('button');
+                        deleteButton.classList.add('delete-button');
+                        deleteButton.textContent = "Eliminar";
+                        deleteButton.setAttribute('data-id', usuario.id);
+                        actionButtons.appendChild(deleteButton);
+
+                        userCard.appendChild(actionButtons);
+
+                        usuariosListDiv.appendChild(userCard);
+                    });
+
+                    document.querySelectorAll('.delete-button').forEach(button => {
+                        button.addEventListener('click', function(event) {
+                            const id = event.target.getAttribute('data-id');
+                            console.log(id);  // Depuración: Verificar el ID
+
+                            if (confirm("¿Estás seguro de eliminar este usuario?")) {
+                                const baseUrl = "http://localhost:8080/inicio/eliminar/";
+                                const url = baseUrl + id;
+                                console.log("URL construida:", url);
+
+                                fetch(url, {
+                                    method: 'DELETE',
+                                    headers: {
+                                        'Authorization': 'Bearer ' + token,
+                                        'Content-Type': 'application/json',
+                                    },
+                                })
+                                    .then(response => response.json())
+                                    .then(success => {
+                                        if (success) {
+                                            alert("Usuario eliminado con éxito");
+                                            event.target.closest('.user-card').remove();
+                                        } else {
+                                            alert("No se pudo eliminar el usuario.");
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error:', error);
+                                        alert("Error al eliminar el usuario.");
+                                    });
+                            }
+                        });
+                    });
+                } else {
+                    alert("No se encontraron usuarios.");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("No se pudo cargar los detalles del usuario.");
+            });
+    });
+
+    function openModal(usuario) {
+        const modal = document.getElementById('editModal');
+        const editNombre = document.getElementById('editNombre');
+        const editEmail = document.getElementById('editEmail');
+        const editPassword = document.getElementById('editPassword');
+
+        editNombre.value = usuario.nombre;
+        editEmail.value = usuario.email;
+        editPassword.value = usuario.password;
+
+        modal.style.display = 'flex';
+
+        document.getElementById('editForm').setAttribute('data-id', usuario.id);
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'none';
+    }
+
+    document.getElementById('editForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const id = this.getAttribute('data-id');
+        const nombre = document.getElementById('editNombre').value;
+        const email = document.getElementById('editEmail').value;
+        const password = document.getElementById('editPassword').value;
+
+        const token = localStorage.getItem("authToken");
+
+        const baseUrl = "http://localhost:8080/inicio/editar/";
+        const url = baseUrl + id;
+
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': 'Bearer ' + token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ nombre, email, password }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al actualizar el usuario');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Usuario actualizado:", data);
+                alert("Usuario actualizado con éxito");
+                closeModal();
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Error al actualizar el usuario.");
+            });
+    });
+</script>
+</body>
+</html>

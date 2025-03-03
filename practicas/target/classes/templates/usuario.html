@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfil de Usuario</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0d1117; /* Fondo más oscuro */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            color: #c9d1d9; /* Color de texto más claro */
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #161b22;
+            padding: 20px;
+            box-shadow: 2px 0px 6px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            height: 100vh;
+        }
+
+        .sidebar a {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 12px 20px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+        }
+
+        .sidebar a:hover {
+            background-color: #21262d;
+        }
+
+        #logoutButton {
+            background: #da3633;
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 12px 20px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+
+        #logoutButton:hover {
+            background-color: #f85149;
+        }
+
+        .container {
+            flex-grow: 1;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 550px;
+            background-color: #161b22;
+        }
+
+        .header {
+            background-color: #238636;
+            padding: 18px;
+            border-radius: 10px;
+            text-align: center;
+            color: #fff;
+            font-size: 22px;
+            font-weight: 500;
+        }
+
+        h1 {
+            margin: 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background-color: #21262d;
+            border-radius: 10px;
+        }
+
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #30363d;
+            color: #c9d1d9;
+            font-size: 16px;
+        }
+
+        td:first-child {
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 14px;
+            color: #8b949e;
+        }
+
+        .footer a {
+            text-decoration: none;
+            color: #c9d1d9;
+            font-weight: bold;
+        }
+
+        .row-hover:hover {
+            background-color: #30363d;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <a href="#">Dashboard</a>
+    <a href="#">Perfil</a>
+    <a href="#">Ajustes</a>
+    <div id="logoutButton">Cerrar sesión</div>
+</div>
+
+<div class="main-content">
+    <div class="container">
+        <div class="header">
+            <h1>Perfil de Usuario</h1>
+        </div>
+        <table>
+            <tr>
+                <td><strong>Nombre:</strong></td>
+                <td><span id="nombre">Cargando...</span></td>
+            </tr>
+            <tr>
+                <td><strong>Email:</strong></td>
+                <td><span id="email">Cargando...</span></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+    document.getElementById('logoutButton').addEventListener('click', function(event) {
+        event.preventDefault();
+        localStorage.removeItem('authToken');
+        window.location.href = "http://localhost:8080/inicio/login";
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const token = localStorage.getItem("authToken");
+
+        if (!token) {
+            window.location.href = "http://localhost:8080/inicio/login";
+        }
+
+        fetch("http://localhost:8080/inicio/usuario/perfil", {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + token
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener el perfil de usuario');
+                }
+                return response.json();
+            })
+            .then(usuario => {
+                document.getElementById("nombre").textContent = usuario.nombre;
+                document.getElementById("email").textContent = usuario.email;
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("No se pudo cargar el perfil de usuario.");
+            });
+    });
+</script>
+</body>
+</html>
