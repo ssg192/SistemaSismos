@@ -9,7 +9,7 @@
 
 
 ## Índice
-1. [Propósito del sistema](#propósito del sistema)
+1. [Propósito del sistema](#propósito-del-sistema)
 2. [Levantar Dockerfile y Docker-compose](#levantar-dockerfile-y-docker-compose)
 3. [Usuario](#usuario)
 4. [URL](#url)
