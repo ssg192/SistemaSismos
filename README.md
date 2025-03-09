@@ -6,7 +6,7 @@
 
 # Visualización 
 
-Para poder visualizar el mapa debera de clonar el repositorio y encontrarse posicionado en esta parte 
+Para poder visualizar el mapa debera de clonar el repositorio con ```git clone``` y encontrarse posicionado en esta parte 
 
 ![image](https://github.com/user-attachments/assets/73246043-e73f-46ee-b745-149d0b3b96b1)
 
