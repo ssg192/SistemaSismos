@@ -1,7 +1,7 @@
 # Sistema de Alerta y Visualización de  Sismos
 
 ## Índice
-1. [Visualización](#visualización)
+1. [Visualización](#Visualización)
 2. [Endpoints](#endpoints)
 
 # Visualización 
