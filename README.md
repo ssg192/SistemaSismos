@@ -1,5 +1,9 @@
 # Sistema de Alerta y Visualización de  Sismos
 
+## Índice
+1. [Visualización](#visualización)
+2. [Endpoints](#endpoints)
+
 # Visualización 
 
 Para poder visualizar el mapa debera de clonar el repositorio y encontrarse posicionado en esta parte 
@@ -13,10 +17,16 @@ Para despues ejecutar el comando ```docker compose up ``` y dirigirse al link de
 
 Para poder visualizar los sismos, del lado derecho hay un menú de color nanranja si lo oprime podra ver los sismos
 
-
 ![image](https://github.com/user-attachments/assets/a14dc8f1-eeec-4721-9eee-ed843618b0bd)
 
 Al hacer click en ellos, automaticamente se posicionara en donde se localizaron esos sismos
 
 [Grabación de pantalla desde 2025-03-09 02-48-30.webm](https://github.com/user-attachments/assets/ceca36cb-010b-4478-bc6a-9aaae05348db)
 
+# Endpoints
+
+Para el caso de los endpoints puede entrar en la url http://localhost:9090/q/swagger-ui/#/ , al entrar debera de ver el unico endpoint, al hacer click podra interactuar con este.
+
+![imagen](https://github.com/user-attachments/assets/f74232a0-608d-4c92-8b19-5b87606aef99)
+
+![imagen](https://github.com/user-attachments/assets/f6bcbdc7-6ac7-4802-81c2-4892d968a707)
