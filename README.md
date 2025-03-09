@@ -21,7 +21,7 @@ Para poder visualizar los sismos, del lado derecho hay un menú de color nanranj
 
 Al hacer click en ellos, automaticamente se posicionara en donde se localizaron esos sismos
 
-[Grabación de pantalla desde 2025-03-09 02-48-30.webm](https://github.com/user-attachments/assets/ceca36cb-010b-4478-bc6a-9aaae05348db)
+https://github.com/user-attachments/assets/0b3daff2-ff42-4666-8d82-8b29a7738b43
 
 # Endpoints
 
