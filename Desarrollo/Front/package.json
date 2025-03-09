@@ -7,6 +7,10 @@
   "scripts": {
     "start": "react-scripts start"
   },
+  "scripts": {
+  "build": "react-scripts build"
+},
+
   "browserslist": {
     "production": [
       ">0.2%",
@@ -19,4 +23,5 @@
       "last 1 safari version"
     ]
   }
+  
 }

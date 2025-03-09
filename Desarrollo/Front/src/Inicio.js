@@ -9,7 +9,7 @@ function Inicio() {
   const [coordenadas, setCoordenadas] = useState(null); // Estado para coordenadas
 
   useEffect(() => {
-    fetch("http://localhost:8080/inicio", {
+    fetch("http://localhost:9090/inicio", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
