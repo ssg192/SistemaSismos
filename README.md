@@ -3,6 +3,7 @@
 ## Índice
 1. [Visualización](#Visualización)
 2. [Endpoints](#endpoints)
+3. [Documentación](#https://github.com/ssg192/SistemaSismos/blob/feat/developer/DocumentacionEquipo8.pdf)
 
 # Visualización 
 
