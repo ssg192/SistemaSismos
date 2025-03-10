@@ -3,7 +3,7 @@
 ## Índice
 1. [Visualización](#Visualización)
 2. [Endpoints](#endpoints)
-3. [Documentación](#https://github.com/ssg192/SistemaSismos/blob/feat/developer/DocumentacionEquipo8.pdf)
+3. [Documentación](#Documentación)
 
 # Visualización 
 
@@ -31,3 +31,7 @@ Para el caso de los endpoints puede entrar en la url http://localhost:9090/q/swa
 ![imagen](https://github.com/user-attachments/assets/f74232a0-608d-4c92-8b19-5b87606aef99)
 
 ![imagen](https://github.com/user-attachments/assets/f6bcbdc7-6ac7-4802-81c2-4892d968a707)
+
+
+## Documentación  
+[Documentación](https://github.com/ssg192/SistemaSismos/blob/feat/developer/DocumentacionEquipo8.pdf)
