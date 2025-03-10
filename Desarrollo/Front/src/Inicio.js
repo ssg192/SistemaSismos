@@ -1,3 +1,4 @@
+//implementacion api
 import { useEffect, useState } from "react";
 import MapaMexico from "./MapaMexico"; 
 import "./components/Inicio.css";  
