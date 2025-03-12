@@ -4,6 +4,7 @@
 1. [Visualización](#Visualización)
 2. [Endpoints](#endpoints)
 3. [Documentación](#Documentación)
+4. [Metodología](#Metodologia)
 
 # Visualización 
 
@@ -35,3 +36,10 @@ Para el caso de los endpoints puede entrar en la url http://localhost:9090/q/swa
 
 ## Documentación  
 [Documentación](https://github.com/ssg192/SistemaSismos/blob/feat/developer/DocumentacionEquipo8.pdf)
+
+
+# Metodologia
+Para el seguimiento de el sistema pronto a implementar en su fase final, se uso la plataforma click up con la finalidad de llevar un orden asi como un ejecución paralela de diferentes actividades.
+
+![imagen](https://github.com/user-attachments/assets/959e3e7e-28eb-4689-9cb7-82ceae52a61b)
+
