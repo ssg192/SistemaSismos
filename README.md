@@ -5,7 +5,7 @@
 2. [Endpoints](#endpoints)
 3. [Documentación](#Documentación)
 4. [Metodología](#Metodologia)
-5. [Documentación Técnica](#Documentacion-Técnica)
+5. [Documentación Técnica](#Documentación-Técnica)
 
 # Visualización 
 
