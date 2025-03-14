@@ -45,4 +45,4 @@ Para el seguimiento de el sistema pronto a implementar en su fase final, se uso 
 ![imagen](https://github.com/user-attachments/assets/959e3e7e-28eb-4689-9cb7-82ceae52a61b)
 
 # Documentación Técnica
-
+[Documentación Técnica](https://github.com/ssg192/SistemaSismos/blob/a17b7a98476b7419f760bdfc4f090480e68a491d/SSN-integrado.pdf)
