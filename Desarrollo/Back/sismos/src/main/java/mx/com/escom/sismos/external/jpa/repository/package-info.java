@@ -1,1 +1,0 @@
-package mx.com.escom.sismos.external.jpa.repository;
