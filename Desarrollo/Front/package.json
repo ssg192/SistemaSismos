@@ -7,8 +7,6 @@
   "scripts": {
     "start": "react-scripts start"
   },
-<<<<<<< HEAD
-=======
   "scripts": {
   "build": "react-scripts build"
 },
@@ -26,8 +24,5 @@
       "last 1 safari version"
     ]
   }
-<<<<<<< HEAD
-=======
-  
->>>>>>> feat/developer
-}
+
+} 
