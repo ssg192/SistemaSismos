@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { MapContainer, TileLayer } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 
@@ -15,7 +14,6 @@ const MapaMexico = () => {
   noWrap={true}
 />
 
-=======
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, CircleMarker, Popup, Circle, useMap } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
@@ -103,13 +101,8 @@ const MapaMexico = ({ coordenadas }) => {
           />
         </>
       )}
->>>>>>> feat/developer
     </MapContainer>
   );
 };
 
-<<<<<<< HEAD
 export default MapaMexico;
-=======
-export default MapaMexico;
->>>>>>> feat/developer
