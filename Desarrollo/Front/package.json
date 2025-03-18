@@ -7,13 +7,11 @@
   "scripts": {
     "start": "react-scripts start"
   },
-<<<<<<< HEAD
-=======
+
   "scripts": {
   "build": "react-scripts build"
 },
 
->>>>>>> feat/developer
   "browserslist": {
     "production": [
       ">0.2%",
@@ -26,8 +24,5 @@
       "last 1 safari version"
     ]
   }
-<<<<<<< HEAD
-=======
-  
->>>>>>> feat/developer
+
 }
