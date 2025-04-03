@@ -26,6 +26,12 @@ public class BusquedaSismoDto {
     private BigDecimal magnitud;
     @JsonProperty
     private String referenciaLocalizacion;
+    @JsonProperty
+    private BigDecimal latitud;
+    @JsonProperty
+    private BigDecimal longitud;
+    @JsonProperty
+    private String estatus;
 
 
     public static BusquedaSismoDto fromEntity(Sismo sismo) {
@@ -34,17 +40,13 @@ public class BusquedaSismoDto {
                 .hora(sismo.getHora())
                 .magnitud(sismo.getMagnitud())
                 .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
+                .latitud(sismo.getLatitud())
+                .longitud(sismo.getLongitud())
+                .estatus(sismo.getEstatus())
                 .build();
     }
 
-    public Sismo toEntity() {
-        return Sismo.builder()
-                .fecha(fecha)
-                .hora(hora)
-                .magnitud(magnitud)
-                .referenciaLocalizacion(referenciaLocalizacion)
-                .build();
-    }
+
 
 
 }

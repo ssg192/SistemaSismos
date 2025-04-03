@@ -11,7 +11,6 @@ import mx.com.escom.util.error.ErrorCodesEnum;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 
 @ApplicationScoped
@@ -24,5 +23,11 @@ public class SismoBs implements SismoService {
     public List<Sismo> listaSismos() {
         return sismoRepository.obtenerSismos();
     }
+
+    @Override
+    public List<Sismo> busquedaSismo(LocalDate fecha, BigDecimal magnitud) {
+        return sismoRepository.BusquedaSismos(fecha,magnitud);
+    }
+
 
 }

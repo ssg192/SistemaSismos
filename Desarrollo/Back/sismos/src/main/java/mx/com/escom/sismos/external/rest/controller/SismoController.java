@@ -11,6 +11,7 @@ import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
 import mx.com.escom.sismos.external.rest.dto.SismoDto;
 import mx.com.escom.util.error.ErrorMapper;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.logging.annotations.Pos;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -31,6 +32,14 @@ public class SismoController {
     public Response obtenerSismos() {
         var sismos= sismoService.listaSismos().stream().map(SismoDto::fromEntity).collect(Collectors.toList());
         return Response.ok(sismos).build();
+    }
+
+    @POST
+    @Path("/{fecha}/{magnitud}")
+    public Response busquedaSismo(@PathParam("fecha") LocalDate fecha, @PathParam("magnitud") BigDecimal magnitud) {
+       var busqueda = sismoService.busquedaSismo(fecha,magnitud).stream().map(BusquedaSismoDto::fromEntity).collect(Collectors.toList());
+       return Response.ok(busqueda).build();
+
     }
 
 }
