@@ -2,16 +2,13 @@ package mx.com.escom.sismos.external.rest.controller;
 
 
 import jakarta.inject.Inject;
-import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
 import mx.com.escom.sismos.external.rest.dto.SismoDto;
-import mx.com.escom.util.error.ErrorMapper;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
-import org.jboss.logging.annotations.Pos;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
