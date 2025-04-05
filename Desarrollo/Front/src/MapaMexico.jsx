@@ -1,26 +1,15 @@
-<<<<<<< HEAD
-import { MapContainer, TileLayer } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-
-const MapaMexico = () => {
-  return (
-    <MapContainer 
-      center={[23.6345, -102.5528]} 
-      zoom={5} 
-      style={{ height: "100vh", width: "100%" }}  // 100vh para ocupar toda la altura de la ventana
-    >
-  <TileLayer
-  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  noWrap={true}
-/>
-
-=======
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, CircleMarker, Popup, Circle, useMap } from "react-leaflet";
+import React, { useEffect, useState } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  CircleMarker,
+  Popup,
+  Circle,
+  useMap,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Componente para cambiar la vista del mapa al hacer clic en el marcador
+// Componente para cambiar la vista del mapa dinámicamente
 const ChangeView = ({ coordenadas }) => {
   const map = useMap();
 
@@ -34,34 +23,29 @@ const ChangeView = ({ coordenadas }) => {
 };
 
 const MapaMexico = ({ coordenadas }) => {
-  const [circleScale, setCircleScale] = useState(1); // Inicia en 1 para evitar problemas iniciales
+  const [circleScale, setCircleScale] = useState(1); // Tamaño inicial del efecto
   const [opacity, setOpacity] = useState(0.6);
-  const [expanding, setExpanding] = useState(false);
 
+  // Manejo del efecto de expansión de la onda sísmica
   useEffect(() => {
-    if (coordenadas) {
-      setExpanding(true); // Inicia la expansión de la onda sísmica
-    }
-  }, [coordenadas]);
+    if (!coordenadas) return;
 
-  useEffect(() => {
-    let interval;
+    setCircleScale(1); // Reinicia la escala cuando cambian las coordenadas
+    setOpacity(0.6);
 
-    if (expanding) {
-      interval = setInterval(() => {
-        setCircleScale((prev) => prev + 0.05); // Aumenta el tamaño del círculo
-        setOpacity((prev) => Math.max(prev - 0.01, 0)); // Disminuye la opacidad
+    const interval = setInterval(() => {
+      setCircleScale((prev) => prev + 0.05); // Aumenta el tamaño gradualmente
+      setOpacity((prev) => Math.max(prev - 0.01, 0)); // Reduce la opacidad
 
-        // Reinicia el efecto cuando el círculo es demasiado grande o la opacidad es 0
-        if (circleScale > 3 || opacity <= 0) {
-          setCircleScale(1); // Reinicia el tamaño del círculo
-          setOpacity(0.6); // Reinicia la opacidad
-        }
-      }, 50); // Actualiza cada 50ms para una animación más suave
-    }
+      // Detener el efecto si las condiciones se cumplen
+      if (circleScale > 3 || opacity <= 0) {
+        setCircleScale(1);
+        setOpacity(0.6); // Reinicio
+      }
+    }, 50);
 
-    return () => clearInterval(interval); // Limpia el intervalo al desmontar el componente
-  }, [expanding, circleScale, opacity]);
+    return () => clearInterval(interval); // Limpia el efecto al desmontar o cambiar coordenadas
+  }, [coordenadas, circleScale, opacity]);
 
   return (
     <MapContainer
@@ -76,15 +60,15 @@ const MapaMexico = ({ coordenadas }) => {
       />
       <ChangeView coordenadas={coordenadas} />
 
-      {/* Muestra un CircleMarker solo si hay coordenadas */}
+      {/* Solo muestra el marcador si hay coordenadas */}
       {coordenadas && (
         <>
           <CircleMarker
             center={[coordenadas.lat, coordenadas.lng]}
-            radius={10} // Tamaño del círculo
-            color="red" // Color del círculo
-            fillColor="red" // Color del relleno
-            fillOpacity={0.7} // Opacidad del relleno
+            radius={10}
+            color="red"
+            fillColor="red"
+            fillOpacity={0.7}
           >
             <Popup>
               <b>Ubicación del Sismo</b> <br />
@@ -92,24 +76,19 @@ const MapaMexico = ({ coordenadas }) => {
             </Popup>
           </CircleMarker>
 
-          {/* Onda sísmica (expansión) */}
+          {/* Agrega el efecto de onda sísmica */}
           <Circle
             center={[coordenadas.lat, coordenadas.lng]}
-            radius={circleScale * 50000} // Escala de expansión (ajusta el multiplicador según sea necesario)
+            radius={circleScale * 50000} // Multiplicador para ajustar tamaño
             color="red"
             fillColor="red"
-            fillOpacity={opacity} // Opacidad decreciente
-            stroke={false} // Sin borde
+            fillOpacity={opacity} // La opacidad varía dinámicamente
+            stroke={false}
           />
         </>
       )}
->>>>>>> feat/developer
     </MapContainer>
   );
 };
 
-<<<<<<< HEAD
 export default MapaMexico;
-=======
-export default MapaMexico;
->>>>>>> feat/developer
