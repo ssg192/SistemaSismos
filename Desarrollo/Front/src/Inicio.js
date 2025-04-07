@@ -14,7 +14,7 @@ function Inicio() {
   const [magnitudFiltro, setMagnitudFiltro] = useState("");
   const [noResults, setNoResults] = useState(false);
 
-  const URL_API = "http://localhost:9090/inicio";
+  const URL_API = "http://localhost:8080/inicio";
 
   useEffect(() => {
     fetchSismos();
@@ -38,20 +38,33 @@ function Inicio() {
   };
 
   const handleBuscar = async () => {
+    if (!fechaFiltro || !magnitudFiltro) {
+      setNoResults(true);
+      setSismos([]);
+      return;
+    }
+
     try {
-      const response = await fetch(URL_API);
+      const response = await fetch(`http://localhost:8080/inicio/${fechaFiltro}/${magnitudFiltro}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fecha: fechaFiltro,
+          magnitud: parseFloat(magnitudFiltro),
+        }),
+      });
+
+      if (!response.ok) throw new Error("Error en la respuesta del servidor");
+
       const data = await response.json();
-
-      const filtrados = data.filter(
-        (sismo) =>
-          (!fechaFiltro || sismo.fecha === fechaFiltro) &&
-          (!magnitudFiltro || sismo.magnitud >= parseFloat(magnitudFiltro))
-      );
-
-      setSismos(filtrados);
-      setNoResults(filtrados.length === 0);
+      setSismos(data);
+      setNoResults(data.length === 0);
     } catch (error) {
       console.error("Error al filtrar datos:", error);
+      setNoResults(true);
+      setSismos([]);
     }
   };
 
@@ -83,6 +96,7 @@ function Inicio() {
           value={fechaFiltro}
           onChange={(e) => setFechaFiltro(e.target.value)}
           className="search-input"
+          placeholder="aaaa-mm-dd"
         />
         <input
           type="number"
@@ -114,7 +128,11 @@ function Inicio() {
 
       {/* Menú lateral */}
       <div className={`sidebar ${menuVisible ? "visible" : ""}`}>
-        <button className="close-btn" onClick={() => setMenuVisible(false)} aria-label="Cerrar menú">
+        <button
+          className="close-btn"
+          onClick={() => setMenuVisible(false)}
+          aria-label="Cerrar menú"
+        >
           &times;
         </button>
         <h2>Menú</h2>
@@ -128,30 +146,55 @@ function Inicio() {
           <ul className="sismos-list">
             {sismos.map((sismo) => (
               <li
-                key={sismo.identificador}
-                className={`sismo-item ${sismoSeleccionado?.identificador === sismo.identificador ? "activo" : ""}`}
+                key={`${sismo.fecha}-${sismo.hora}`}
+                className={`sismo-item ${
+                  sismoSeleccionado?.fecha === sismo.fecha &&
+                  sismoSeleccionado?.hora === sismo.hora
+                    ? "activo"
+                    : ""
+                }`}
                 onClick={() => handleSismoClick(sismo)}
               >
-                <strong>{sismo.referenciaLocalizacion}</strong> - Magnitud: {sismo.magnitud}
+                <strong>{sismo.referenciaLocalizacion}</strong> - Magnitud:{" "}
+                {sismo.magnitud}
               </li>
             ))}
           </ul>
           {sismoSeleccionado && (
             <div className="sismo-info">
               <h3>Detalles del Sismo</h3>
-              <p><b>Ubicación:</b> {sismoSeleccionado.referenciaLocalizacion}</p>
-              <p><b>Magnitud:</b> {sismoSeleccionado.magnitud}</p>
-              <p><b>Fecha:</b> {sismoSeleccionado.fecha} {sismoSeleccionado.hora}</p>
-              <p><b>Profundidad:</b> {sismoSeleccionado.profundidad} km</p>
-              <p><b>Latitud:</b> {sismoSeleccionado.latitud}, <b>Longitud:</b> {sismoSeleccionado.longitud}</p>
-              <p><b>Estatus:</b> {sismoSeleccionado.estatus}</p>
+              <p>
+                <b>Ubicación:</b> {sismoSeleccionado.referenciaLocalizacion}
+              </p>
+              <p>
+                <b>Magnitud:</b> {sismoSeleccionado.magnitud}
+              </p>
+              <p>
+                <b>Fecha:</b> {sismoSeleccionado.fecha}{" "}
+                {sismoSeleccionado.hora}
+              </p>
+              <p>
+                <b>Profundidad:</b>{" "}
+                {sismoSeleccionado.profundidad ?? "N/A"} km
+              </p>
+              <p>
+                <b>Latitud:</b> {sismoSeleccionado.latitud},{" "}
+                <b>Longitud:</b> {sismoSeleccionado.longitud}
+              </p>
+              <p>
+                <b>Estatus:</b> {sismoSeleccionado.estatus}
+              </p>
             </div>
           )}
         </div>
       </div>
 
       {/* Botón menú hamburguesa */}
-      <button className="menu-btn" onClick={() => setMenuVisible(!menuVisible)} aria-label="Abrir menú">
+      <button
+        className="menu-btn"
+        onClick={() => setMenuVisible(!menuVisible)}
+        aria-label="Abrir menú"
+      >
         &#9776;
       </button>
     </div>
