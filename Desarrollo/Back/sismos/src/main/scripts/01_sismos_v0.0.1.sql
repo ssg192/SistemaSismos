@@ -1,6 +1,5 @@
-
+CREATE DATABASE sismos;
 CREATE EXTENSION IF NOT EXISTS postgis;
-CREATE TABLE sismos;
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 CREATE TABLE registros_sismos (
                                   id SERIAL PRIMARY KEY,
