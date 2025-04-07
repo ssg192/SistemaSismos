@@ -1,35 +1,35 @@
-//implementacion api
 import { useEffect, useState } from "react";
-import MapaMexico from "./MapaMexico"; 
-import "./components/Inicio.css";  
+import MapaMexico from "./MapaMexico";
+import { useTheme } from "./useTheme";
+import "./components/Inicio.css";
 
 function Inicio() {
   const [sismos, setSismos] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
   const [sismoSeleccionado, setSismoSeleccionado] = useState(null);
-  const [coordenadas, setCoordenadas] = useState(null); // Estado para coordenadas
+  const [coordenadas, setCoordenadas] = useState(null);
+  const { theme, toggleTheme } = useTheme();
+
+  const [fechaFiltro, setFechaFiltro] = useState("");
+  const [magnitudFiltro, setMagnitudFiltro] = useState("");
+  const [noResults, setNoResults] = useState(false);
+
+  const URL_API = "http://localhost:9090/inicio";
 
   useEffect(() => {
-    fetch("http://localhost:9090/inicio", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      }
-    })
-      .then((response) => {
-        if (!response.ok) throw new Error("Error en la respuesta del servidor");
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Datos obtenidos: ", data);
-        setSismos(data);
-      })
-      .catch((error) => console.error("Error al obtener datos:", error));
+    fetchSismos();
   }, []);
 
-  const seleccionarSismo = (sismo) => {
-    setSismoSeleccionado(sismo);
-    setCoordenadas({ lat: sismo.latitud, lng: sismo.longitud }); // Guarda coordenadas
+  const fetchSismos = async () => {
+    try {
+      const response = await fetch(URL_API);
+      if (!response.ok) throw new Error("Error en la respuesta del servidor");
+      const data = await response.json();
+      setSismos(data);
+      setNoResults(false);
+    } catch (error) {
+      console.error("Error al obtener datos:", error);
+    }
   };
 
   const handleSismoClick = (sismo) => {
@@ -37,37 +37,105 @@ function Inicio() {
     setCoordenadas({ lat: sismo.latitud, lng: sismo.longitud });
   };
 
+  const handleBuscar = async () => {
+    try {
+      const response = await fetch(URL_API);
+      const data = await response.json();
+
+      const filtrados = data.filter(
+        (sismo) =>
+          (!fechaFiltro || sismo.fecha === fechaFiltro) &&
+          (!magnitudFiltro || sismo.magnitud >= parseFloat(magnitudFiltro))
+      );
+
+      setSismos(filtrados);
+      setNoResults(filtrados.length === 0);
+    } catch (error) {
+      console.error("Error al filtrar datos:", error);
+    }
+  };
+
+  const handleLimpiar = async () => {
+    setFechaFiltro("");
+    setMagnitudFiltro("");
+    await fetchSismos();
+  };
+
   return (
-    <div className="container">
-      {/* Mapa con coordenadas seleccionadas */}
+    <div className="container" data-theme={theme}>
+      {/* Switch del Tema */}
+      <div className="theme-switch-container">
+        <label className="switch" aria-label="Cambiar tema">
+          <input
+            type="checkbox"
+            onChange={toggleTheme}
+            checked={theme === "dark"}
+          />
+          <span className="slider round"></span>
+        </label>
+      </div>
+
+      {/* Cuadro de búsqueda */}
+      <div className="search-container">
+        <h3 className="search-title">Búsqueda de Sismos</h3>
+        <input
+          type="date"
+          value={fechaFiltro}
+          onChange={(e) => setFechaFiltro(e.target.value)}
+          className="search-input"
+        />
+        <input
+          type="number"
+          min="0"
+          step="0.1"
+          value={magnitudFiltro}
+          onChange={(e) => setMagnitudFiltro(e.target.value)}
+          placeholder="Magnitud"
+          className="search-input"
+        />
+        <div className="button-group">
+          <button onClick={handleBuscar} className="search-button">
+            Buscar
+          </button>
+          <button onClick={handleLimpiar} className="search-button clear-button">
+            Limpiar
+          </button>
+        </div>
+
+        {noResults && (
+          <p className="no-results">No se encontraron sismos con estos criterios</p>
+        )}
+      </div>
+
+      {/* Mapa */}
       <div className="map-container">
-        <MapaMexico coordenadas={coordenadas} />
+        <MapaMexico coordenadas={coordenadas} theme={theme} />
       </div>
 
       {/* Menú lateral */}
       <div className={`sidebar ${menuVisible ? "visible" : ""}`}>
-        <button className="close-btn" onClick={() => setMenuVisible(false)}>&times;</button>
+        <button className="close-btn" onClick={() => setMenuVisible(false)} aria-label="Cerrar menú">
+          &times;
+        </button>
         <h2>Menú</h2>
         <ul>
-          <li><a href="#sismos">Sismos Recientes</a></li>
+          <li>
+            <a href="#sismos">Sismos Recientes</a>
+          </li>
         </ul>
-
-        {/* Lista de sismos */}
         <div className="content">
           <h2 id="sismos">Sismos Recientes</h2>
           <ul className="sismos-list">
             {sismos.map((sismo) => (
-              <li 
-                key={sismo.identificador} 
-                className={`sismo-item ${sismoSeleccionado === sismo ? "activo" : ""}`}
-                onClick={() => handleSismoClick(sismo)} // Aquí se usa handleSismoClick
+              <li
+                key={sismo.identificador}
+                className={`sismo-item ${sismoSeleccionado?.identificador === sismo.identificador ? "activo" : ""}`}
+                onClick={() => handleSismoClick(sismo)}
               >
                 <strong>{sismo.referenciaLocalizacion}</strong> - Magnitud: {sismo.magnitud}
               </li>
             ))}
           </ul>
-
-          {/* Información detallada del sismo seleccionado */}
           {sismoSeleccionado && (
             <div className="sismo-info">
               <h3>Detalles del Sismo</h3>
@@ -82,8 +150,8 @@ function Inicio() {
         </div>
       </div>
 
-      {/* Botón de hamburguesa */}
-      <button className="menu-btn" onClick={() => setMenuVisible(!menuVisible)}>
+      {/* Botón menú hamburguesa */}
+      <button className="menu-btn" onClick={() => setMenuVisible(!menuVisible)} aria-label="Abrir menú">
         &#9776;
       </button>
     </div>

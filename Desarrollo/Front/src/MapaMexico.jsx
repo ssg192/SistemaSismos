@@ -9,58 +9,63 @@ import {
 } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Componente para cambiar la vista del mapa dinámicamente
+// Componente para cambiar la vista del mapa al seleccionar un sismo
 const ChangeView = ({ coordenadas }) => {
   const map = useMap();
-
   useEffect(() => {
     if (coordenadas) {
-      map.setView([coordenadas.lat, coordenadas.lng], 7); // Mueve el mapa
+      map.setView([coordenadas.lat, coordenadas.lng], 7);
     }
   }, [coordenadas, map]);
-
   return null;
 };
 
-const MapaMexico = ({ coordenadas }) => {
-  const [circleScale, setCircleScale] = useState(1); // Tamaño inicial del efecto
+const MapaMexico = ({ coordenadas, theme }) => {
+  const [circleScale, setCircleScale] = useState(1);
   const [opacity, setOpacity] = useState(0.6);
 
-  // Manejo del efecto de expansión de la onda sísmica
+  // Animación del círculo
   useEffect(() => {
     if (!coordenadas) return;
 
-    setCircleScale(1); // Reinicia la escala cuando cambian las coordenadas
-    setOpacity(0.6);
+    let scale = 1;
+    let opac = 0.6;
 
     const interval = setInterval(() => {
-      setCircleScale((prev) => prev + 0.05); // Aumenta el tamaño gradualmente
-      setOpacity((prev) => Math.max(prev - 0.01, 0)); // Reduce la opacidad
+      scale += 0.05;
+      opac = Math.max(opac - 0.01, 0);
 
-      // Detener el efecto si las condiciones se cumplen
-      if (circleScale > 3 || opacity <= 0) {
-        setCircleScale(1);
-        setOpacity(0.6); // Reinicio
+      setCircleScale(scale);
+      setOpacity(opac);
+
+      if (scale > 3 || opac <= 0) {
+        scale = 1;
+        opac = 0.6;
       }
     }, 50);
 
-    return () => clearInterval(interval); // Limpia el efecto al desmontar o cambiar coordenadas
-  }, [coordenadas, circleScale, opacity]);
+    return () => clearInterval(interval);
+  }, [coordenadas]);
+
+  // Elegir capa del mapa según el tema
+  const tileLayerURL =
+    theme === "dark"
+      ? "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+      : "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+
+  const tileLayerAttribution =
+    theme === "dark"
+      ? '&copy; <a href="https://carto.com/">CARTO</a>'
+      : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors';
 
   return (
     <MapContainer
-      center={[23.6345, -102.5528]} // Centro inicial en México
+      center={[23.6345, -102.5528]} // Centro de México
       zoom={5}
-      style={{ height: "100vh", width: "100%" }}
+      style={{ height: "100%", width: "100%" }} // 👈 importante: no usar 100vh aquí
     >
-      <TileLayer
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        noWrap={true}
-      />
+      <TileLayer url={tileLayerURL} attribution={tileLayerAttribution} noWrap={true} />
       <ChangeView coordenadas={coordenadas} />
-
-      {/* Solo muestra el marcador si hay coordenadas */}
       {coordenadas && (
         <>
           <CircleMarker
@@ -75,14 +80,12 @@ const MapaMexico = ({ coordenadas }) => {
               Lat: {coordenadas.lat}, Lng: {coordenadas.lng}
             </Popup>
           </CircleMarker>
-
-          {/* Agrega el efecto de onda sísmica */}
           <Circle
             center={[coordenadas.lat, coordenadas.lng]}
-            radius={circleScale * 50000} // Multiplicador para ajustar tamaño
+            radius={circleScale * 50000}
             color="red"
             fillColor="red"
-            fillOpacity={opacity} // La opacidad varía dinámicamente
+            fillOpacity={opacity}
             stroke={false}
           />
         </>

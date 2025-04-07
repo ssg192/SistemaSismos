@@ -1,110 +1,260 @@
-/* Contenedor principal para gestionar el diseño */
+/* Contenedor principal */
 .container {
-    position: relative; /* Permite posicionar elementos hijos de manera absoluta */
-    width: 100%;
-    height: 100vh;
-  }
-  
-  /* Estilos para el mapa */
-  .map-container {
-    width: 100%;
-    height: 100vh; /* El mapa ocupa toda la pantalla */
-    position: absolute; /* El mapa está en una capa inferior */
-    top: 0;
-    left: 0;
-    z-index: 0; /* El mapa está detrás de todo */
-  }
-  
-  /* Menú lateral */
-  .sidebar {
-    position: fixed; /* El menú estará fijo, flotando sobre el mapa */
-    top: 0;
-    right: 0;
-    width: 250px;
-    height: 100%;
-    background-color: rgba(44, 62, 80, 0.9); /* Fondo semitransparente */
-    color: white;
-    padding: 20px;
-    transition: transform 0.3s ease-in-out; /* Animación suave para mover el menú */
-    z-index: 1000; /* Asegura que el menú esté por encima del mapa */
-    overflow-y: auto; /* Permite hacer scroll si el contenido es muy largo */
-    transform: translateX(100%); /* Oculto por defecto */
-  }
-  
-  /* Cuando el menú está visible */
-  .sidebar.visible {
-    transform: translateX(0); /* Se desliza hacia la pantalla */
-  }
-  
-  /* Estilo del botón del menú de hamburguesa */
-  .menu-btn {
-    font-size: 30px;
-    background: none;
-    border: none;
-    color: rgb(255, 174, 0);
-    position: fixed; /* Fijo para que siempre sea visible */
-    top: 20px;
-    right: 20px; /* Mueve el botón a la derecha */
-    z-index: 1100; /* El botón debe estar encima del mapa y el menú */
-    cursor: pointer;
-  }
-  
-  /* Estilo para el botón de cierre del menú */
-  .close-btn {
-    font-size: 30px;
-    background: none;
-    border: none;
-    color: white;
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    cursor: pointer;
-  }
-  
-  /* Contenido de los sismos (dentro del menú lateral) */
-  .content {
-    margin-top: 20px; /* Espacio adicional si es necesario */
-  }
-  
-  /* Estilos para la lista de sismos */
-  .sismos-list {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .sismo-item {
-    background-color: white;
-    margin: 15px 0;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: black; /* Texto en color negro para contrastar con el fondo del menú */
-  }
-  
-  .sismo-item:hover {
-    background-color: #f4f4f4;
-  }
-  
-  .sismo-details {
-    font-size: 16px;
-  }
-  
-  .sismo-details b {
-    font-weight: bold;
-  }
-/* Resalta la viñeta seleccionada */
-.sismo-item.activo {
-    background-color: #3498db; /* Azul para resaltar */
-    color: white;
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden; /* ← evita que el contenido se desborde */
+  display: flex;
+  flex-direction: column;
 }
 
-/* Contenedor de la información detallada del sismo */
-.sismo-info {
-    background: white;
-    padding: 15px;
-    margin-top: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    color: black;
+/* Estilos para el mapa */
+.map-container {
+  flex: 1; /* ← permite que el mapa ocupe el resto del espacio */
+  width: 100%;
+  height: 100%; /* ← asegura que use el espacio completo disponible */
+  position: relative;
+  z-index: 0;
 }
-  
+
+/* Tema claro */
+[data-theme="light"] {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --sidebar-bg: rgba(240, 240, 240, 0.9);
+  --item-hover-bg: #f4f4f4;
+  --item-active-bg: #3498db;
+  --menu-btn-color: #ffae00;
+  --switch-slider-bg: #ccc;
+}
+
+/* Tema oscuro */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --sidebar-bg: rgba(44, 62, 80, 0.9);
+  --item-hover-bg: #333333;
+  --item-active-bg: #3498db;
+  --menu-btn-color: #ffd700;
+  --switch-slider-bg: #2196f3;
+}
+
+/* Estilo global según tema */
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: sans-serif;
+  height: 100vh; /* ← ayuda a asegurar que la app ocupe toda la altura */
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 250px;
+  height: 100%;
+  background-color: var(--sidebar-bg);
+  padding: 20px;
+  overflow-y: auto;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.sidebar.visible {
+  transform: translateX(0);
+}
+
+.menu-btn {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: var(--menu-btn-color);
+  cursor: pointer;
+  z-index: 1500;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 30px;
+  color: var(--text-color);
+  cursor: pointer;
+}
+
+/* Switch Tema */
+.theme-switch-container {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  z-index: 1500;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--switch-slider-bg);
+  transition: background-color 0.3s ease;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: transform 0.3s ease;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--switch-slider-bg);
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Lista de sismos en el menú lateral */
+.sismos-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sismo-item {
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sismo-item:hover {
+  background-color: var(--item-hover-bg);
+}
+
+.sismo-item.activo {
+  background-color: var(--item-active-bg);
+  color: white;
+}
+
+.sismo-info {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: var(--item-hover-bg);
+  border-radius: 4px;
+}
+
+/* Recuadro de búsqueda */
+.search-container {
+  position: fixed;
+  top: 80px;
+  left: 20px;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background-color: var(--sidebar-bg);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 3px 15px rgba(0, 0, 0, 0.3);
+  max-width: 280px;
+  width: auto;
+}
+
+.search-title {
+  margin: 0 0 10px 0;
+  text-align: center;
+  font-size: 18px;
+  color: var(--text-color);
+  border-bottom: 1px solid var(--text-color);
+  padding-bottom: 8px;
+  font-weight: bold;
+}
+
+.search-input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+}
+
+.search-button {
+  padding: 10px 16px;
+  background-color: var(--item-active-bg);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  flex: 1;
+}
+
+.search-button:hover {
+  background-color: #2980b9;
+}
+
+.button-group {
+  display: flex;
+  gap: 8px;
+}
+
+.clear-button {
+  background-color: #e74c3c;
+}
+
+.clear-button:hover {
+  background-color: #c0392b;
+}
+
+.no-results {
+  color: #e74c3c;
+  text-align: center;
+  margin-top: 10px;
+  font-style: italic;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .search-container {
+    width: 85%;
+    max-width: none;
+  }
+
+  .button-group {
+    flex-direction: row;
+  }
+}
