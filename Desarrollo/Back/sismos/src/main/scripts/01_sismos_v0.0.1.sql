@@ -63,6 +63,26 @@ COLLATE = utf8mb4_0900_ai_ci;
 
 CREATE INDEX `fk_registros_sismos_placas_idx` ON `sismos`.`registros_sismos` (`placa_id` ASC) VISIBLE;
 
+DELIMITER //
+
+CREATE TRIGGER asignar_placa_antes_insert
+BEFORE INSERT ON registros_sismos
+FOR EACH ROW
+BEGIN
+  DECLARE id_placa INT;
+
+  SELECT placa_id INTO id_placa
+  FROM placas
+  ORDER BY ST_Distance(
+    geom,
+    ST_GeomFromText(CONCAT('POINT(', NEW.longitud, ' ', NEW.latitud, ')'))
+  )
+  LIMIT 1;
+
+  SET NEW.placa_id = id_placa;
+END //
+
+DELIMITER ;
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
