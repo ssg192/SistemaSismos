@@ -84,6 +84,20 @@ END //
 
 DELIMITER ;
 
+CREATE TABLE IF NOT EXISTS `sismos`.`sensores` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `codigo` varchar(10) NOT NULL,
+  `nombre` varchar(35) NOT NULL,
+  `estado` varchar(45) NOT NULL,
+  `latitud` DECIMAL(7,4) NOT NULL,
+  `longitud` DECIMAL(7,4) NOT NULL,
+  `red` varchar(10) NOT NULL,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8mb4
+COLLATE = utf8mb4_0900_ai_ci;
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
