@@ -1,0 +1,56 @@
+.vista-capacitaciones {
+    padding: 30px;
+    max-width: 800px;
+    margin: 0 auto;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  
+  .vista-capacitaciones h2 {
+    font-size: 24px;
+    margin-bottom: 25px;
+    text-align: center;
+    border-bottom: 2px solid #25D366; /* Verde WhatsApp */
+    padding-bottom: 10px;
+  }
+  
+  .vista-capacitaciones section {
+    margin-bottom: 25px;
+  }
+  
+  .vista-capacitaciones h3 {
+    font-size: 18px;
+    color: #25D366; /* Verde WhatsApp */
+    margin-bottom: 10px;
+  }
+  
+  .vista-capacitaciones ul {
+    padding-left: 20px;
+    list-style: disc;
+    margin: 0;
+  }
+  
+  .vista-capacitaciones p {
+    margin-bottom: 10px;
+    line-height: 1.6;
+    font-size: 15px;
+  }
+  
+  .volver-btn.capacitacion {
+    background-color: #25D366; /* Verde WhatsApp */
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    margin-bottom: 30px;
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .volver-btn.capacitacion:hover {
+    background-color: #1ebc57; /* tono más oscuro al pasar el cursor */
+  }
+  
