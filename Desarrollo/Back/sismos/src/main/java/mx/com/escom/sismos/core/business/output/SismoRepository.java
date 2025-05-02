@@ -11,6 +11,5 @@ public interface SismoRepository {
 
     List<Sismo> obtenerSismos();
     List<Sismo>BusquedaSismos(LocalDate fecha, BigDecimal magnitud);
-
-}
+  }
 

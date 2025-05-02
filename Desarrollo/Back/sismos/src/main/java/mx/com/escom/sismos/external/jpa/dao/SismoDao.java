@@ -12,8 +12,6 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -27,12 +25,12 @@ public class SismoDao implements SismoRepository {
     @Inject
     EntityManager entityManager;
 
-    private static final String PARAM_BUSQUEDA="select" +
+    private static final String PARAM_BUSQUEDA = "select" +
             " rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion " +
             "from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud";
 
-    private static final String PARAM_FECHA= "fecha";
-    private static final String PARAM_MAGNITUD= "magnitud";
+    private static final String PARAM_FECHA = "fecha";
+    private static final String PARAM_MAGNITUD = "magnitud";
 
     @Override
     public List<Sismo> obtenerSismos() {
@@ -40,9 +38,10 @@ public class SismoDao implements SismoRepository {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Sismo> BusquedaSismos(LocalDate fecha, BigDecimal magnitud) {
-        Stream<Object[]>busqueda = entityManager.createNativeQuery(PARAM_BUSQUEDA).setParameter(PARAM_FECHA,fecha).setParameter(PARAM_MAGNITUD,magnitud).getResultStream();
-        return busqueda.map(sismo->Sismo.builder()
+        Stream<Object[]> busqueda = entityManager.createNativeQuery(PARAM_BUSQUEDA).setParameter(PARAM_FECHA, fecha).setParameter(PARAM_MAGNITUD, magnitud).getResultStream();
+        return busqueda.map(sismo -> Sismo.builder()
                 .fecha(sismo[0] != null ? ((Date) sismo[0]).toLocalDate() : null)
                 .magnitud((BigDecimal) sismo[1])
                 .estatus((String) sismo[2])
