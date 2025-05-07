@@ -3,6 +3,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
+import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -27,5 +28,10 @@ public class SismoBs implements SismoService {
     @Override
     public List<Sismo> busquedaSismo(LocalDate fecha, BigDecimal magnitud) {
         return sismoRepository.BusquedaSismos(fecha,magnitud);
+    }
+
+    @Override
+    public List<Placas> listaPlacas() {
+        return sismoRepository.listarPlacas();
     }
 }

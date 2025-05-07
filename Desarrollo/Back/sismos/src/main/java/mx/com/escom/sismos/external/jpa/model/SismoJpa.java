@@ -38,8 +38,6 @@ public class SismoJpa {
     private String referenciaLocalizacion;
     @Column(name = "estatus")
     private String estatus;
-    @Column(name = "identificador")
-    private String identificador;
     @Column(name = "placa_id")
     private Integer placaId;
 
@@ -54,7 +52,6 @@ public class SismoJpa {
                 .profundidad(sismo.getProfundidad())
                 .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
                 .estatus(sismo.getEstatus())
-                .identificador(sismo.getIdentificador())
                 .placaId(sismo.getPlacaId())
                 .build();
     }
@@ -70,7 +67,6 @@ public class SismoJpa {
                 .profundidad(profundidad)
                 .referenciaLocalizacion(referenciaLocalizacion)
                 .estatus(estatus)
-                .identificador(identificador)
                 .placaId(placaId)
                 .build();
     }

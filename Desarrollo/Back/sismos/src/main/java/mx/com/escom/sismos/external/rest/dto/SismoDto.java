@@ -15,6 +15,8 @@ import java.time.LocalTime;
 @AllArgsConstructor
 public class SismoDto {
     @JsonProperty
+    private Integer id;
+    @JsonProperty
     private LocalDate fecha;
     @JsonProperty
     private LocalTime hora;
@@ -30,13 +32,12 @@ public class SismoDto {
     private String referenciaLocalizacion;
     @JsonProperty
     private String estatus;
-    @JsonProperty
-    private String identificador;
 
 
 
     public static SismoDto fromEntity(Sismo sismo) {
         return SismoDto.builder()
+                .id(sismo.getId())
                 .fecha(sismo.getFecha())
                 .hora(sismo.getHora())
                 .magnitud(sismo.getMagnitud())
@@ -45,7 +46,6 @@ public class SismoDto {
                 .profundidad(sismo.getProfundidad())
                 .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
                 .estatus(sismo.getEstatus())
-                .identificador(sismo.getIdentificador())
                 .build();
     }
 

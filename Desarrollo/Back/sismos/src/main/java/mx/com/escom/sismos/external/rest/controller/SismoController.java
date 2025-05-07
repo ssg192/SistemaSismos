@@ -7,6 +7,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
+import mx.com.escom.sismos.external.rest.dto.PlacasDto;
 import mx.com.escom.sismos.external.rest.dto.SismoDto;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -37,6 +38,13 @@ public class SismoController {
        var busqueda = sismoService.busquedaSismo(fecha,magnitud).stream().map(BusquedaSismoDto::fromEntity).collect(Collectors.toList());
        return Response.ok(busqueda).build();
 
+    }
+
+    @GET
+    @Path("/placas")
+    public Response obtenerPlacas() {
+        var placas = sismoService.listaPlacas().stream().map(PlacasDto::fromEntity).collect(Collectors.toList());
+        return Response.ok(placas).build();
     }
 
 }

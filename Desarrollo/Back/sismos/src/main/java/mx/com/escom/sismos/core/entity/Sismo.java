@@ -24,7 +24,6 @@ public class Sismo {
     private BigDecimal profundidad;
     private String referenciaLocalizacion;
     private String estatus;
-    private String identificador;
     private Integer placaId;
 }
 

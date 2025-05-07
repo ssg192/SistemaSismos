@@ -7,3 +7,4 @@ import java.util.Optional;
 
 public interface SismoJpaRepository extends JpaRepository<SismoJpa, Integer> {
 }
+

@@ -4,8 +4,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
+import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
+import mx.com.escom.sismos.external.jpa.model.PlacasJpa;
 import mx.com.escom.sismos.external.jpa.model.SismoJpa;
+import mx.com.escom.sismos.external.jpa.repository.PlacasJpaRepository;
 import mx.com.escom.sismos.external.jpa.repository.SismoJpaRepository;
 
 import java.math.BigDecimal;
@@ -21,9 +24,11 @@ import java.util.stream.Stream;
 public class SismoDao implements SismoRepository {
     @Inject
     SismoJpaRepository sismoJpaRepository;
-
+    @Inject
+    PlacasJpaRepository placasJpaRepository;
     @Inject
     EntityManager entityManager;
+
 
     private static final String PARAM_BUSQUEDA = "select" +
             " rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion " +
@@ -52,6 +57,11 @@ public class SismoDao implements SismoRepository {
                 .build()
 
         ).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Placas> listarPlacas() {
+        return placasJpaRepository.findAll().stream().map(PlacasJpa::toEntity).collect(Collectors.toList());
     }
 
 }
