@@ -12,6 +12,7 @@ public interface SismoRepository {
 
     List<Sismo> obtenerSismos();
     List<Sismo>BusquedaSismos(LocalDate fecha, BigDecimal magnitud);
-    List<Placas> listarPlacas();
+    List<Placas> findPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos);
+
   }
 

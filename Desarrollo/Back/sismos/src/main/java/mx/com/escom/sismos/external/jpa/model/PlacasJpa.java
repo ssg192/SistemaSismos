@@ -1,6 +1,5 @@
 package mx.com.escom.sismos.external.jpa.model;
 
-import io.quarkus.arc.All;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,12 +27,15 @@ public class PlacasJpa {
     private String nombre;
     @Column(name = "descripcion")
     private String descripcion;
+    @Column(name = "geom")
+    private String ubicacion;
 
     public static PlacasJpa fromEntity(Placas placas) {
         return PlacasJpa.builder()
                 .id(placas.getId())
                 .nombre(placas.getNombre())
                 .descripcion(placas.getDescripcion())
+                .ubicacion(placas.getUbicacion())
                 .build();
     }
 
@@ -42,6 +44,7 @@ public class PlacasJpa {
                 .id(this.id)
                 .nombre(this.nombre)
                 .descripcion(this.descripcion)
+                .ubicacion(this.ubicacion)
                 .build();
     }
 }

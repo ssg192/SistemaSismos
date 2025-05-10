@@ -3,12 +3,10 @@ package mx.com.escom.sismos.external.jpa.dao;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceUnit;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
-import mx.com.escom.sismos.external.jpa.model.PlacasJpa;
-import mx.com.escom.sismos.external.jpa.model.SismoJpa;
-import mx.com.escom.sismos.external.jpa.repository.PlacasJpaRepository;
 import mx.com.escom.sismos.external.jpa.repository.SismoJpaRepository;
 
 import java.math.BigDecimal;
@@ -16,36 +14,64 @@ import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
 @ApplicationScoped
 public class SismoDao implements SismoRepository {
-    @Inject
-    SismoJpaRepository sismoJpaRepository;
-    @Inject
-    PlacasJpaRepository placasJpaRepository;
-    @Inject
-    EntityManager entityManager;
 
+    @PersistenceUnit()
+    private final EntityManager entityManagerReading;
 
-    private static final String PARAM_BUSQUEDA = "select" +
-            " rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion " +
-            "from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud";
+    @Inject
+    public SismoDao(EntityManager entityManagerReading) {
+        this.entityManagerReading = entityManagerReading;
+    }
+
+    private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
+            SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
+            FROM registros_sismos rs 
+            """;
+    private static final String PARAM_BUSQUEDA = """
+            select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion 
+            from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud;
+        """;
+
+    private static final String QUERY_PARAM_PLACA_SISMO_BY_ID_PLACA= """
+            select p.nombre, p.descripcion, ST_AsText(p.geom) from placas p
+            join registros_sismos rs on rs.placa_id = p.placa_id
+            where p.placa_id = :idPlaca and rs.id = :idSismo;
+            """;
 
     private static final String PARAM_FECHA = "fecha";
     private static final String PARAM_MAGNITUD = "magnitud";
+    private static final String PARAM_ID_PLACA = "idPlaca";
+    private static final String PARAM_ID_SISMOS = "idSismo";
 
     @Override
+    @SuppressWarnings("unchecked")
     public List<Sismo> obtenerSismos() {
-        return sismoJpaRepository.findAll().stream().map(SismoJpa::toEntity).collect(Collectors.toList());
+        Stream<Object[]>result= entityManagerReading.createNativeQuery(QUERY_PARAM_FIND_ALL_SISMOS)
+                .getResultStream();
+        return result.map(sismos->Sismo.builder()
+                .id((Integer) sismos[0])
+                .fecha(sismos[1] != null ? ((Date) sismos[1]).toLocalDate() : null)
+                .hora(sismos[2] != null ? ((Time) sismos[2]).toLocalTime() : null)
+                .magnitud((BigDecimal) sismos[3])
+                .latitud((BigDecimal) sismos[4])
+                .longitud((BigDecimal) sismos[5])
+                .profundidad((BigDecimal) sismos[6])
+                .referenciaLocalizacion((String) sismos[7])
+                .estatus((String) sismos[8])
+                .placaId((Integer) sismos[9])
+                .build()
+        ).toList();
     }
 
     @Override
     @SuppressWarnings("unchecked")
     public List<Sismo> BusquedaSismos(LocalDate fecha, BigDecimal magnitud) {
-        Stream<Object[]> busqueda = entityManager.createNativeQuery(PARAM_BUSQUEDA).setParameter(PARAM_FECHA, fecha).setParameter(PARAM_MAGNITUD, magnitud).getResultStream();
+        Stream<Object[]> busqueda = entityManagerReading.createNativeQuery(PARAM_BUSQUEDA).setParameter(PARAM_FECHA, fecha).setParameter(PARAM_MAGNITUD, magnitud).getResultStream();
         return busqueda.map(sismo -> Sismo.builder()
                 .fecha(sismo[0] != null ? ((Date) sismo[0]).toLocalDate() : null)
                 .magnitud((BigDecimal) sismo[1])
@@ -56,12 +82,21 @@ public class SismoDao implements SismoRepository {
                 .referenciaLocalizacion((String) sismo[6])
                 .build()
 
-        ).collect(Collectors.toList());
+        ).toList();
     }
 
     @Override
-    public List<Placas> listarPlacas() {
-        return placasJpaRepository.findAll().stream().map(PlacasJpa::toEntity).collect(Collectors.toList());
+    @SuppressWarnings("unchecked")
+    public List<Placas> findPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos) {
+        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_PARAM_PLACA_SISMO_BY_ID_PLACA)
+                .setParameter(PARAM_ID_PLACA, idPlaca)
+                .setParameter(PARAM_ID_SISMOS, idSismos)
+                .getResultStream();
+        return result.map(placa-> Placas.builder()
+                .nombre((String) placa[0])
+                .descripcion((String)placa[1])
+                .ubicacion((String) placa[2])
+                .build()).toList();
     }
 
 }

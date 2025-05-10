@@ -32,6 +32,8 @@ public class SismoDto {
     private String referenciaLocalizacion;
     @JsonProperty
     private String estatus;
+    @JsonProperty
+    private Integer placaId;
 
 
 
@@ -46,6 +48,7 @@ public class SismoDto {
                 .profundidad(sismo.getProfundidad())
                 .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
                 .estatus(sismo.getEstatus())
+                .placaId(sismo.getPlacaId())
                 .build();
     }
 

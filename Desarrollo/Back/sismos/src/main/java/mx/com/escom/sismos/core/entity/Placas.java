@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -13,4 +14,5 @@ public class Placas {
     private Integer id;
     private String nombre;
     private String descripcion;
+    private String ubicacion;
 }

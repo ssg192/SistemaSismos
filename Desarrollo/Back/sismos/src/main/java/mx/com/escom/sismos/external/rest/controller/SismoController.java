@@ -13,7 +13,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.stream.Collectors;
 
 
 
@@ -23,27 +22,30 @@ import java.util.stream.Collectors;
 @Consumes(MediaType.APPLICATION_JSON)
 public class SismoController {
 
+    private final SismoService sismoService;
     @Inject
-    SismoService sismoService;
+    public SismoController(SismoService sismoService) {
+        this.sismoService = sismoService;
+    }
 
     @GET
     public Response obtenerSismos() {
-        var sismos= sismoService.listaSismos().stream().map(SismoDto::fromEntity).collect(Collectors.toList());
+        var sismos= sismoService.listaSismos().stream().map(SismoDto::fromEntity).toList();
         return Response.ok(sismos).build();
     }
 
     @POST
     @Path("/{fecha}/{magnitud}")
     public Response busquedaSismo(@PathParam("fecha") LocalDate fecha, @PathParam("magnitud") BigDecimal magnitud) {
-       var busqueda = sismoService.busquedaSismo(fecha,magnitud).stream().map(BusquedaSismoDto::fromEntity).collect(Collectors.toList());
+       var busqueda = sismoService.busquedaSismo(fecha,magnitud).stream().map(BusquedaSismoDto::fromEntity).toList();
        return Response.ok(busqueda).build();
 
     }
 
     @GET
-    @Path("/placas")
-    public Response obtenerPlacas() {
-        var placas = sismoService.listaPlacas().stream().map(PlacasDto::fromEntity).collect(Collectors.toList());
+    @Path("/{idPlaca}/{idSismo}")
+    public Response obtenerPlacasSismoByIdPlaca(@PathParam("idPlaca") Integer idPlaca, @PathParam("idSismo") Integer idSismo) {
+        var placas = sismoService.listPlacaSismoByIdPlaca(idPlaca,idSismo).stream().map(PlacasDto::fromEntity).toList();
         return Response.ok(placas).build();
     }
 

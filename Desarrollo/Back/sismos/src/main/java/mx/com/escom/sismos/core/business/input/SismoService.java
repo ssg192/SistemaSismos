@@ -8,5 +8,5 @@ import java.util.List;
 public interface SismoService {
     List<Sismo> listaSismos();
     List<Sismo> busquedaSismo(LocalDate fecha, BigDecimal magnitud);
-    List<Placas> listaPlacas();
+    List<Placas> listPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos);
 }

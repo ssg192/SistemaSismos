@@ -1,6 +1,5 @@
 package mx.com.escom.sismos.external.rest.controller;
 
-import java.util.stream.Collectors;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -19,11 +18,14 @@ import mx.com.escom.sismos.external.rest.dto.SensoresDto;
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class SensoresController {
+    private final SensoresService sensoresService;
     @Inject
-    SensoresService sensoresService;
+    public SensoresController(SensoresService sensoresService) {
+        this.sensoresService = sensoresService;
+    }
     @GET
     public Response obtenerSensores() {
-        var sensores = sensoresService.getAllSensores().stream().map(SensoresDto::fromEntity).collect(Collectors.toList());
+        var sensores = sensoresService.getAllSensores().stream().map(SensoresDto::fromEntity).toList();
         return Response.ok(sensores).build();
     }
 }
