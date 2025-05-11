@@ -8,7 +8,8 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mx.com.escom.sismos.core.business.input.SismoService;
-import mx.com.escom.sismos.external.rest.dto.CatalogoPlacasDto;
+import mx.com.escom.sismos.core.entity.Placas;
+import mx.com.escom.sismos.external.rest.dto.PlacasDto;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -28,7 +29,7 @@ public class CatalogoController {
     @GET
     @Operation(operationId = "listCatalogoPlacas", summary = "Obtiene el catalogo de placas")
     public Response getCatalogoPlacas() {
-        return Response.ok(sismoService.listAllPlacas().stream().map(CatalogoPlacasDto::fromEntity).toList()).build();
+        return Response.ok(sismoService.listAllPlacas().stream().map(PlacasDto::fromEntity).toList()).build();
     }
 
 }

@@ -28,7 +28,7 @@ public class SismoDao implements SismoRepository {
     }
 
     private static final String QUERY_PARAM_CATALOGO_PLACAS= """
-            select p.placa_id , p.nombre, p.descripcion from placas p;
+            select p.placa_id , p.nombre, p.descripcion,ST_AsText(p.geom) from placas p;
             """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
@@ -110,7 +110,9 @@ public class SismoDao implements SismoRepository {
         return result.map(placa->Placas.builder()
                 .id((Integer) placa[0])
                 .nombre((String) placa[1])
-                .descripcion((String) placa[2]).build()
+                .descripcion((String) placa[2])
+                .ubicacion((String)placa[3]).build()
+
         ).toList();
     }
 
