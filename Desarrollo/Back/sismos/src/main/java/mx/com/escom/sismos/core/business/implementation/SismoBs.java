@@ -34,4 +34,10 @@ public class SismoBs implements SismoService {
     public List<Placas> listPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos) {
         return sismoRepository.findPlacaSismoByIdPlaca(idPlaca,idSismos);
     }
+
+    @Override
+    public List<Placas> listAllPlacas() {
+        return sismoRepository.findAllPlacas();
+    }
+
 }

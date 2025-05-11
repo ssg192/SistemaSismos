@@ -19,7 +19,9 @@ mx/com/escom/sismos/external/rest/controller/SensoresController.class
 mx/com/escom/util/error/ErrorDetailDto$ErrorDetailDtoBuilder.class
 mx/com/escom/sismos/external/jpa/model/SensoresJpa.class
 mx/com/escom/util/statemachine/CustomStateMachine.class
+mx/com/escom/paginacion/Paginacion$PaginacionBuilder.class
 mx/com/escom/sismos/core/business/input/SensoresService.class
+mx/com/escom/sismos/external/rest/dto/CatalogoPlacasDto.class
 mx/com/escom/sismos/external/rest/dto/SensoresDto.class
 mx/com/escom/sismos/external/rest/dto/BusquedaSismoDto.class
 mx/com/escom/sismos/core/entity/Sensores.class
@@ -27,6 +29,7 @@ mx/com/escom/util/error/ErrorCodesEnum.class
 mx/com/escom/util/StringConstants.class
 mx/com/escom/util/error/ErrorMapper.class
 mx/com/escom/sismos/external/jpa/model/SismoJpa$SismoJpaBuilder.class
+mx/com/escom/paginacion/PaginacionDTO.class
 mx/com/escom/util/statemachine/Action.class
 mx/com/escom/sismos/external/rest/dto/BusquedaSismoDto$BusquedaSismoDtoBuilder.class
 mx/com/escom/sismos/core/business/output/SensoresRepository.class
@@ -39,13 +42,16 @@ mx/com/escom/sismos/external/jpa/repository/SensoresJpaRepository.class
 mx/com/escom/util/error/ErrorDetailDto.class
 mx/com/escom/sismos/external/rest/controller/SismoController.class
 mx/com/escom/util/error/PersistenceExceptionMapper.class
+mx/com/escom/sismos/external/rest/dto/CatalogoPlacasDto$CatalogoPlacasDtoBuilder.class
 mx/com/escom/sismos/core/business/implementation/SismoBs.class
 mx/com/escom/util/error/ErrorType.class
 mx/com/escom/util/statemachine/State.class
 mx/com/escom/sismos/core/entity/Sismo.class
+mx/com/escom/sismos/external/rest/controller/CatalogoController.class
 mx/com/escom/sismos/core/statemachine/package-info.class
 mx/com/escom/sismos/core/entity/Sismo$SismoBuilder.class
 mx/com/escom/util/error/ErrorCodeExceptionMapper.class
+mx/com/escom/paginacion/Paginacion.class
 mx/com/escom/util/error/ConstraintViolationExceptionMapper.class
 mx/com/escom/util/error/ErrorResponseDto.class
 mx/com/escom/sismos/external/jpa/repository/SismoJpaRepository.class

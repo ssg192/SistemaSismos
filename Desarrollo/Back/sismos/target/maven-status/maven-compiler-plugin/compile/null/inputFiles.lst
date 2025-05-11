@@ -1,3 +1,5 @@
+/home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/paginacion/Paginacion.java
+/home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/paginacion/PaginacionDTO.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/business/implementation/SensoresBs.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/business/implementation/SismoBs.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/business/input/SensoresService.java
@@ -16,9 +18,11 @@
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/jpa/repository/PlacasJpaRepository.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/jpa/repository/SensoresJpaRepository.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/jpa/repository/SismoJpaRepository.java
+/home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/controller/CatalogoController.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/controller/SensoresController.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/controller/SismoController.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/BusquedaSismoDto.java
+/home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/CatalogoPlacasDto.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/PlacasDto.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/SensoresDto.java
 /home/salvador/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/SismoDto.java

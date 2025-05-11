@@ -7,7 +7,6 @@ import jakarta.persistence.PersistenceUnit;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
-import mx.com.escom.sismos.external.jpa.repository.SismoJpaRepository;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -27,6 +26,10 @@ public class SismoDao implements SismoRepository {
     public SismoDao(EntityManager entityManagerReading) {
         this.entityManagerReading = entityManagerReading;
     }
+
+    private static final String QUERY_PARAM_CATALOGO_PLACAS= """
+            select p.placa_id , p.nombre, p.descripcion from placas p;
+            """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
             SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
@@ -97,6 +100,18 @@ public class SismoDao implements SismoRepository {
                 .descripcion((String)placa[1])
                 .ubicacion((String) placa[2])
                 .build()).toList();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Placas> findAllPlacas() {
+        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_PARAM_CATALOGO_PLACAS)
+                .getResultStream();
+        return result.map(placa->Placas.builder()
+                .id((Integer) placa[0])
+                .nombre((String) placa[1])
+                .descripcion((String) placa[2]).build()
+        ).toList();
     }
 
 }
