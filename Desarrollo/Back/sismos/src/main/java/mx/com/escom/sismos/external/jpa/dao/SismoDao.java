@@ -28,12 +28,13 @@ public class SismoDao implements SismoRepository {
     }
 
     private static final String QUERY_PARAM_CATALOGO_PLACAS= """
-            select p.placa_id , p.nombre, p.descripcion,ST_AsText(p.geom) from placas p;
+            select p.placa_id , p.nombre, p.descripcion,ST_AsText(p.geom) from placas p
             """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
             SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
             FROM registros_sismos rs 
+            LIMIT 100;
             """;
     private static final String PARAM_BUSQUEDA = """
             select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion 
