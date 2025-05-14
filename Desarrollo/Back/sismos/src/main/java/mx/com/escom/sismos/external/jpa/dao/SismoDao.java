@@ -60,7 +60,7 @@ public class SismoDao implements SismoRepository {
     public List<Sismo> obtenerSismos(Paginacion paginacion) {
         int offset = (paginacion.getNumeroPagina() - 1) * paginacion.getCantidadFilas();
         Stream<Object[]>result= entityManagerReading.createNativeQuery(QUERY_PARAM_FIND_ALL_SISMOS)
-                .setParameter(PARAM_NUM_PAGINAS,paginacion.getNumeroPagina() )
+                .setParameter(PARAM_NUM_PAGINAS,paginacion.getNumeroPagina())
                 .setParameter(PARAM_CANTIDAD_FILAS,offset)
                 .getResultStream();
         return result.map(sismos->Sismo.builder()
