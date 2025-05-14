@@ -31,8 +31,8 @@ public class SismoController {
     }
 
     @GET
-    public Response obtenerSismos(@BeanParam PaginacionDTO paginacion) {
-        var sismos= sismoService.listaSismos(paginacion.toEntity()).stream().map(SismoDto::fromEntity).toList();
+    public Response obtenerSismos() {
+        var sismos= sismoService.listaSismos().stream().map(SismoDto::fromEntity).toList();
         return Response.ok(sismos).build();
     }
 

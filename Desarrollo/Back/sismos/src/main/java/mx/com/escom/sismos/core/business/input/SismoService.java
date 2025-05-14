@@ -7,7 +7,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface SismoService {
-    List<Sismo> listaSismos(Paginacion paginacion);
+    List<Sismo> listaSismos();
     List<Sismo> busquedaSismo(LocalDate fecha, BigDecimal magnitud);
     List<Placas> listPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos);
     List<Placas> listAllPlacas();

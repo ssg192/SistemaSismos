@@ -35,7 +35,6 @@ public class SismoDao implements SismoRepository {
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
             SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
             FROM registros_sismos rs 
-            LIMIT :numPaginas OFFSET :cantidadFilas;
             """;
     private static final String PARAM_BUSQUEDA = """
             select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion 
@@ -43,7 +42,7 @@ public class SismoDao implements SismoRepository {
         """;
 
     private static final String QUERY_PARAM_PLACA_SISMO_BY_ID_PLACA= """
-            select p.nombre, p.descripcion, ST_AsText(p.geom) from placas p
+            select  p.placa_id, p.nombre, p.descripcion, ST_AsText(p.geom) from placas p
             join registros_sismos rs on rs.placa_id = p.placa_id
             where p.placa_id = :idPlaca and rs.id = :idSismo;
             """;
@@ -57,11 +56,8 @@ public class SismoDao implements SismoRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Sismo> obtenerSismos(Paginacion paginacion) {
-        int offset = (paginacion.getNumeroPagina() - 1) * paginacion.getCantidadFilas();
+    public List<Sismo> obtenerSismos() {
         Stream<Object[]>result= entityManagerReading.createNativeQuery(QUERY_PARAM_FIND_ALL_SISMOS)
-                .setParameter(PARAM_NUM_PAGINAS,paginacion.getNumeroPagina())
-                .setParameter(PARAM_CANTIDAD_FILAS,offset)
                 .getResultStream();
         return result.map(sismos->Sismo.builder()
                 .id((Integer) sismos[0])
@@ -103,9 +99,10 @@ public class SismoDao implements SismoRepository {
                 .setParameter(PARAM_ID_SISMOS, idSismos)
                 .getResultStream();
         return result.map(placa-> Placas.builder()
-                .nombre((String) placa[0])
-                .descripcion((String)placa[1])
-                .ubicacion((String) placa[2])
+                .id((Integer) placa[0])
+                .nombre((String) placa[1])
+                .descripcion((String)placa[2])
+                .ubicacion((String) placa[3])
                 .build()).toList();
     }
 
