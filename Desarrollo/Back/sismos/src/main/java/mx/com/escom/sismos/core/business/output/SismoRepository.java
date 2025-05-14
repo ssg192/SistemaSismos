@@ -1,5 +1,6 @@
 package mx.com.escom.sismos.core.business.output;
 
+import mx.com.escom.paginacion.Paginacion;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
 
@@ -10,7 +11,7 @@ import java.util.Optional;
 
 public interface SismoRepository {
 
-    List<Sismo> obtenerSismos();
+    List<Sismo> obtenerSismos(Paginacion paginacion);
     List<Sismo>BusquedaSismos(LocalDate fecha, BigDecimal magnitud);
     List<Placas> findPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos);
     List<Placas> findAllPlacas();

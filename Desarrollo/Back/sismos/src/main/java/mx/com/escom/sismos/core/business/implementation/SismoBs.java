@@ -1,6 +1,7 @@
 package mx.com.escom.sismos.core.business.implementation;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
+import mx.com.escom.paginacion.Paginacion;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
@@ -21,8 +22,8 @@ public class SismoBs implements SismoService {
     }
 
     @Override
-    public List<Sismo> listaSismos() {
-        return sismoRepository.obtenerSismos();
+    public List<Sismo> listaSismos(Paginacion paginacion) {
+        return sismoRepository.obtenerSismos(paginacion);
     }
 
     @Override

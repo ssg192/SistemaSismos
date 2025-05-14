@@ -14,6 +14,8 @@ import mx.com.escom.sismos.core.entity.Placas;
 @AllArgsConstructor
 public class PlacasDto {
     @JsonProperty
+    private Integer id;
+    @JsonProperty
     private String nombre;
     @JsonProperty
     private String descripcion;
@@ -22,6 +24,7 @@ public class PlacasDto {
 
     public static PlacasDto fromEntity(Placas placas) {
         return PlacasDto.builder()
+                .id(placas.getId())
                 .nombre(placas.getNombre())
                 .descripcion(placas.getDescripcion())
                 .ubicacion(placas.getUbicacion())

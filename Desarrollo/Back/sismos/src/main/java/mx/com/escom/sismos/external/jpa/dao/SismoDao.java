@@ -4,6 +4,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceUnit;
+import mx.com.escom.paginacion.Paginacion;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
@@ -34,7 +35,7 @@ public class SismoDao implements SismoRepository {
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
             SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
             FROM registros_sismos rs 
-            LIMIT 100;
+            LIMIT :numPaginas OFFSET :cantidadFilas;
             """;
     private static final String PARAM_BUSQUEDA = """
             select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion 
@@ -51,11 +52,16 @@ public class SismoDao implements SismoRepository {
     private static final String PARAM_MAGNITUD = "magnitud";
     private static final String PARAM_ID_PLACA = "idPlaca";
     private static final String PARAM_ID_SISMOS = "idSismo";
+    private static final String PARAM_NUM_PAGINAS = "numPaginas";
+    private static final String PARAM_CANTIDAD_FILAS = "cantidadFilas";
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Sismo> obtenerSismos() {
+    public List<Sismo> obtenerSismos(Paginacion paginacion) {
+        int offset = (paginacion.getNumeroPagina() - 1) * paginacion.getCantidadFilas();
         Stream<Object[]>result= entityManagerReading.createNativeQuery(QUERY_PARAM_FIND_ALL_SISMOS)
+                .setParameter(PARAM_NUM_PAGINAS,paginacion.getNumeroPagina() )
+                .setParameter(PARAM_CANTIDAD_FILAS,offset)
                 .getResultStream();
         return result.map(sismos->Sismo.builder()
                 .id((Integer) sismos[0])

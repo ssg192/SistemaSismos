@@ -5,6 +5,8 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import mx.com.escom.paginacion.Paginacion;
+import mx.com.escom.paginacion.PaginacionDTO;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
 import mx.com.escom.sismos.external.rest.dto.PlacasDto;
@@ -29,8 +31,8 @@ public class SismoController {
     }
 
     @GET
-    public Response obtenerSismos() {
-        var sismos= sismoService.listaSismos().stream().map(SismoDto::fromEntity).toList();
+    public Response obtenerSismos(@BeanParam PaginacionDTO paginacion) {
+        var sismos= sismoService.listaSismos(paginacion.toEntity()).stream().map(SismoDto::fromEntity).toList();
         return Response.ok(sismos).build();
     }
 
