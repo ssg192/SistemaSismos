@@ -1,17 +1,15 @@
-version: '3.8'
-
 services:
-  postgres:
-    image: postgis/postgis:17-3.4
-    container_name: postgres_sismos
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_sismos
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: sismos
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sismos
+      MYSQL_PASSWORD: root
     volumes:
       - ./Desarrollo/Back/sismos/src/main/scripts:/docker-entrypoint-initdb.d
     ports:
-      - "6543:5432"
+      - "3307:3306"
     networks:
       - sismos_network
 
@@ -25,16 +23,16 @@ services:
       quarkus.swagger-ui.display-operation-id: true
       quarkus.swagger-ui.theme: original
       quarkus.swagger-ui.always-include: true
-      quarkus.datasource.db-kind: postgresql
-      quarkus.datasource.username: postgres
-      quarkus.datasource.password: postgres
-      quarkus.datasource.jdbc.url: jdbc:postgresql://postgres_sismos:5432/sismos
+      quarkus.datasource.db-kind: mysql
+      quarkus.datasource.username: root
+      quarkus.datasource.password: root
+      quarkus.datasource.jdbc.url: jdbc:mysql://mysql_sismos:3306/sismos
       quarkus.http.access-log.enabled: true
       quarkus.hibernate-orm.packages: mx.com.escom.sismos.external.jpa.model
     ports:
       - "9090:8080"
     depends_on:
-      - postgres
+      - mysql
     networks:
       - sismos_network
     volumes:
@@ -54,4 +52,3 @@ services:
 networks:
   sismos_network:
     driver: bridge
-
