@@ -40,7 +40,7 @@ COLLATE = utf8mb4_0900_ai_ci;
 -- Table `sismos`.`registros_sismos`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `sismos`.`registros_sismos` (
-  `id` INT NOT NULL AUTO_INCREMENT,
+  `id_registros_sismos` INT NOT NULL AUTO_INCREMENT,
   `fecha` DATE NOT NULL,
   `hora` TIME NOT NULL,
   `magnitud` DECIMAL(3,1) NOT NULL,
@@ -95,6 +95,87 @@ CREATE TABLE IF NOT EXISTS `sismos`.`sensores` (
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
 AUTO_INCREMENT = 7
+-- Crear la tabla
+CREATE TABLE volcanes (
+    id_volcan INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100),
+    latitud DECIMAL(10, 4),
+    longitud DECIMAL(11, 4)
+);
+
+  CREATE TABLE volcanes_afectados (
+    id_volcan INT NOT NULL,
+    id_registros_sismos INT NOT NULL,
+    PRIMARY KEY (id_volcan, id),
+    FOREIGN KEY (id_volcan) REFERENCES volcanes(id_volcan),
+    FOREIGN KEY (id_registros_sismos) REFERENCES registros_sismos(id_registros_sismos)
+  );
+
+ALTER TABLE volcanes_afectados
+ADD COLUMN distancia_km DECIMAL(7,2) AFTER id_registros_sismos;
+
+
+DELIMITER $$
+
+CREATE TRIGGER volcanes_afectados_trigger
+AFTER INSERT ON registros_sismos
+FOR EACH ROW
+BEGIN
+DECLARE done INT DEFAULT FALSE;
+DECLARE v_id INT;
+DECLARE v_lat DECIMAL(10, 4);
+DECLARE v_lon DECIMAL(11, 4);
+DECLARE distancia DOUBLE;
+DECLARE radio DOUBLE;
+
+-- Cursor para recorrer todos los volcanes
+DECLARE volcanes_cursor CURSOR FOR
+SELECT id_volcan, latitud, longitud FROM volcanes;
+
+DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+-- Determinar radio de afectación según magnitud del sismo
+IF NEW.magnitud <= 4.0 THEN
+SET radio = 30;
+ELSEIF NEW.magnitud <= 6.0 THEN
+SET radio = 70;
+ELSEIF NEW.magnitud <= 7.0 THEN
+SET radio = 120;
+ELSE
+SET radio = 200;
+END IF;
+
+-- Abrimos el cursor
+OPEN volcanes_cursor;
+
+volcan_loop: LOOP
+FETCH volcanes_cursor INTO v_id, v_lat, v_lon;
+IF done THEN
+LEAVE volcan_loop;
+END IF;
+-- Calcular distancia usando la fórmula de Haversine
+SET distancia = 6371 * ACOS(
+  COS(RADIANS(NEW.latitud)) *
+  COS(RADIANS(v_lat)) *
+  COS(RADIANS(v_lon) - RADIANS(NEW.longitud)) +
+  SIN(RADIANS(NEW.latitud)) *
+  SIN(RADIANS(v_lat))
+);
+
+-- Si está dentro del radio, insertamos en la tabla intermedia
+IF distancia <= radio THEN
+  INSERT IGNORE INTO volcanes_afectados (id_volcan, id_registros_sismos, distancia_km)
+  VALUES (v_id, NEW.id_registros_sismos, ROUND(distancia, 2));
+END IF;
+END LOOP;
+
+-- Cerramos el cursor
+CLOSE volcanes_cursor;
+END $$
+
+DELIMITER ;
+
+
 DEFAULT CHARACTER SET = utf8mb4
 COLLATE = utf8mb4_0900_ai_ci;
 
