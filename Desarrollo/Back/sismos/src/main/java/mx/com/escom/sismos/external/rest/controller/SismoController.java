@@ -17,7 +17,6 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
-
 @Path("/inicio")
 @Tag(name = "Visualizacion de sismos")
 @Produces(MediaType.APPLICATION_JSON)
@@ -25,29 +24,30 @@ import java.time.LocalDate;
 public class SismoController {
 
     private final SismoService sismoService;
+
     @Inject
     public SismoController(SismoService sismoService) {
         this.sismoService = sismoService;
     }
 
     @GET
-    public Response obtenerSismos() {
-        var sismos= sismoService.listaSismos().stream().map(SismoDto::fromEntity).toList();
-        return Response.ok(sismos).build();
+    public Response obtenerSismos(@BeanParam PaginacionDTO paginacion) {
+        return Response.ok(sismoService.listaSismos(paginacion.toEntity()).stream().map(SismoDto::fromEntity).toList())
+                .build();
     }
 
     @POST
     @Path("/{fecha}/{magnitud}")
     public Response busquedaSismo(@PathParam("fecha") LocalDate fecha, @PathParam("magnitud") BigDecimal magnitud) {
-       var busqueda = sismoService.busquedaSismo(fecha,magnitud).stream().map(BusquedaSismoDto::fromEntity).toList();
-       return Response.ok(busqueda).build();
+        var busqueda = sismoService.busquedaSismo(fecha, magnitud).stream().map(BusquedaSismoDto::fromEntity).toList();
+        return Response.ok(busqueda).build();
 
     }
 
     @GET
     @Path("/{idPlaca}/{idSismo}")
     public Response obtenerPlacasSismoByIdPlaca(@PathParam("idPlaca") Integer idPlaca, @PathParam("idSismo") Integer idSismo) {
-        var placas = sismoService.listPlacaSismoByIdPlaca(idPlaca,idSismo).stream().map(PlacasDto::fromEntity).toList();
+        var placas = sismoService.listPlacaSismoByIdPlaca(idPlaca, idSismo).stream().map(PlacasDto::fromEntity).toList();
         return Response.ok(placas).build();
     }
 

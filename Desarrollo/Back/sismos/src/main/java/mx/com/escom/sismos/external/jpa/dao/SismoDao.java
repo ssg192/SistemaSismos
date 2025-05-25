@@ -8,14 +8,14 @@ import mx.com.escom.paginacion.Paginacion;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
-
+import org.hibernate.query.TypedParameterValue;
+import org.hibernate.type.StandardBasicTypes;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Stream;
-
 
 @ApplicationScoped
 public class SismoDao implements SismoRepository {
@@ -28,20 +28,21 @@ public class SismoDao implements SismoRepository {
         this.entityManagerReading = entityManagerReading;
     }
 
-    private static final String QUERY_PARAM_CATALOGO_PLACAS= """
+    private static final String QUERY_PARAM_CATALOGO_PLACAS = """
             select p.placa_id , p.nombre, p.descripcion,ST_AsText(p.geom) from placas p
             """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
             SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
             FROM registros_sismos rs 
+            LIMIT :numeroPagina OFFSET :numeroFila
             """;
     private static final String PARAM_BUSQUEDA = """
-            select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion 
-            from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud;
-        """;
+                select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion 
+                from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud;
+            """;
 
-    private static final String QUERY_PARAM_PLACA_SISMO_BY_ID_PLACA= """
+    private static final String QUERY_PARAM_PLACA_SISMO_BY_ID_PLACA = """
             select  p.placa_id, p.nombre, p.descripcion, ST_AsText(p.geom) from placas p
             join registros_sismos rs on rs.placa_id = p.placa_id
             where p.placa_id = :idPlaca and rs.id = :idSismo;
@@ -56,10 +57,12 @@ public class SismoDao implements SismoRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Sismo> obtenerSismos() {
-        Stream<Object[]>result= entityManagerReading.createNativeQuery(QUERY_PARAM_FIND_ALL_SISMOS)
+    public List<Sismo> obtenerSismos(Paginacion paginacion) {
+        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_PARAM_FIND_ALL_SISMOS)
+                .setParameter(PARAM_NUM_PAGINAS, new TypedParameterValue<>(StandardBasicTypes.INTEGER, paginacion.getNumeroPagina()))
+                .setParameter(PARAM_CANTIDAD_FILAS, new TypedParameterValue<>(StandardBasicTypes.INTEGER, paginacion.getCantidadFilas()))
                 .getResultStream();
-        return result.map(sismos->Sismo.builder()
+        return result.map(sismos -> Sismo.builder()
                 .id((Integer) sismos[0])
                 .fecha(sismos[1] != null ? ((Date) sismos[1]).toLocalDate() : null)
                 .hora(sismos[2] != null ? ((Time) sismos[2]).toLocalTime() : null)
@@ -98,10 +101,10 @@ public class SismoDao implements SismoRepository {
                 .setParameter(PARAM_ID_PLACA, idPlaca)
                 .setParameter(PARAM_ID_SISMOS, idSismos)
                 .getResultStream();
-        return result.map(placa-> Placas.builder()
+        return result.map(placa -> Placas.builder()
                 .id((Integer) placa[0])
                 .nombre((String) placa[1])
-                .descripcion((String)placa[2])
+                .descripcion((String) placa[2])
                 .ubicacion((String) placa[3])
                 .build()).toList();
     }
@@ -111,11 +114,11 @@ public class SismoDao implements SismoRepository {
     public List<Placas> findAllPlacas() {
         Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_PARAM_CATALOGO_PLACAS)
                 .getResultStream();
-        return result.map(placa->Placas.builder()
+        return result.map(placa -> Placas.builder()
                 .id((Integer) placa[0])
                 .nombre((String) placa[1])
                 .descripcion((String) placa[2])
-                .ubicacion((String)placa[3]).build()
+                .ubicacion((String) placa[3]).build()
 
         ).toList();
     }

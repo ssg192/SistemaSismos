@@ -22,8 +22,8 @@ public class SismoBs implements SismoService {
     }
 
     @Override
-    public List<Sismo> listaSismos() {
-        return sismoRepository.obtenerSismos();
+    public List<Sismo> listaSismos(Paginacion paginacion) {
+        return sismoRepository.obtenerSismos(paginacion);
     }
 
     @Override

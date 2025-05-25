@@ -1,8 +1,8 @@
 package mx.com.escom.paginacion;
 
 
-
 import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,10 +16,12 @@ import org.jboss.resteasy.reactive.RestQuery;
 public class PaginacionDTO {
     @RestQuery
     @PositiveOrZero(message = "CDA_RNS002")
+    @NotNull
     @Schema(description = "Número de página", writeOnly = true)
     private Integer numeroPagina;
     @RestQuery
     @PositiveOrZero(message = "CDA_RNS002")
+    @NotNull
     @Max(value = 500, message = "CDA_RNS003")
     @Schema(description = "Cantidad de filas por página", writeOnly = true)
     private Integer cantidadFilas;
