@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `sismos`.`registros_sismos` (
   `hora_utc` TIME NOT NULL,
   `estatus` VARCHAR(20) NULL DEFAULT NULL,
   `placa_id` INT NOT NULL,
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id_registros_sismos`),
   CONSTRAINT `fk_registros_sismos_placas`
     FOREIGN KEY (`placa_id`)
     REFERENCES `sismos`.`placas` (`placa_id`))
