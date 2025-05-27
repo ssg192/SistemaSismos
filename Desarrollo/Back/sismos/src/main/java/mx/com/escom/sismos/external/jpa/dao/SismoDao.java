@@ -42,10 +42,14 @@ public class SismoDao implements SismoRepository {
                 from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud;
             """;
 
-    private static final String QUERY_PARAM_PLACA_SISMO_BY_ID_PLACA = """
-            select  p.placa_id, p.nombre, p.descripcion, ST_AsText(p.geom) from placas p
-            join registros_sismos rs on rs.placa_id = p.placa_id
-            where p.placa_id = :idPlaca and rs.id = :idSismo;
+    private static final String QUERY_FIND_SISMOS_WITH_PLACA_AND_VOLCAN = """
+        select p.nombre, ST_AsText(p.geom), rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus, 
+        GROUP_CONCAT(v.nombre) as nombre_volcan, GROUP_CONCAT(v.latitud) as latitud_volcan, GROUP_CONCAT(v.longitud) as longitud_volcan from placas p
+        join registros_sismos rs on rs.placa_id=p.placa_id
+        join volcanes_afectados va on va.id_registros_sismos=rs.id_registros_sismos
+        join volcanes v on v.id_volcan=va.id_volcan
+        where rs.id_registros_sismos=:idSismo
+        group by p.nombre, p.geom, rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus;
             """;
 
     private static final String PARAM_FECHA = "fecha";
@@ -96,17 +100,26 @@ public class SismoDao implements SismoRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Placas> findPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos) {
-        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_PARAM_PLACA_SISMO_BY_ID_PLACA)
-                .setParameter(PARAM_ID_PLACA, idPlaca)
-                .setParameter(PARAM_ID_SISMOS, idSismos)
-                .getResultStream();
-        return result.map(placa -> Placas.builder()
-                .id((Integer) placa[0])
-                .nombre((String) placa[1])
-                .descripcion((String) placa[2])
-                .ubicacion((String) placa[3])
-                .build()).toList();
+    public List<Sismo> findSismosWithPlacaAndVolcan(Integer idSismos) {
+        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_FIND_SISMOS_WITH_PLACA_AND_VOLCAN)
+                .setParameter(PARAM_ID_SISMOS, idSismos).getResultStream();
+        return result.map(sismo -> Sismo.builder()
+                .placaNombre((String) sismo[0])
+                .geomPlaca((String) sismo[1])
+                .fecha(sismo[2] != null ? ((Date) sismo[2]).toLocalDate() : null)
+                .magnitud((BigDecimal) sismo[3])
+                .latitud((BigDecimal) sismo[4])
+                .longitud((BigDecimal) sismo[5])
+                .referenciaLocalizacion((String) sismo[6])
+                .estatus((String) sismo[7])
+                .nombreVolcanes(List.of(((String) sismo[8]).split(",")))
+                .latitudVolcanes(List.of(((String) sismo[9]).split(",")).stream().map(BigDecimal::new).toList())
+                .longitudVolcanes(List.of(((String) sismo[10]).split(",")).stream().map(BigDecimal::new).toList())
+                .build()
+        ).toList();
+                
+
+                
     }
 
     @Override

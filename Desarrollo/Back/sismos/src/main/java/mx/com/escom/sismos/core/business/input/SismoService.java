@@ -9,6 +9,6 @@ import java.util.List;
 public interface SismoService {
     List<Sismo> listaSismos(Paginacion paginacion);
     List<Sismo> busquedaSismo(LocalDate fecha, BigDecimal magnitud);
-    List<Placas> listPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos);
+    List<Sismo> listSismosWithPlacaAndVolcan(Integer idSismos);
     List<Placas> listAllPlacas();
 }

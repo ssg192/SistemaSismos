@@ -21,6 +21,7 @@ import java.time.LocalTime;
 public class SismoJpa {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id_registros_sismos")
     private Integer id;
     @Column(name = "fecha")
     private LocalDate fecha;

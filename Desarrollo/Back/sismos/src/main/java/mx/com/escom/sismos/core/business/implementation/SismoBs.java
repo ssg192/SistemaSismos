@@ -32,10 +32,10 @@ public class SismoBs implements SismoService {
     }
 
     @Override
-    public List<Placas> listPlacaSismoByIdPlaca(Integer idPlaca, Integer idSismos) {
-        return sismoRepository.findPlacaSismoByIdPlaca(idPlaca,idSismos);
+    public List<Sismo> listSismosWithPlacaAndVolcan(Integer idSismos) {
+        return sismoRepository.findSismosWithPlacaAndVolcan(idSismos);
     }
-
+    
     @Override
     public List<Placas> listAllPlacas() {
         return sismoRepository.findAllPlacas();

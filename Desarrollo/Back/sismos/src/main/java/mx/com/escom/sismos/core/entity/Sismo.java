@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 
 @Builder
@@ -25,5 +26,10 @@ public class Sismo {
     private String referenciaLocalizacion;
     private String estatus;
     private Integer placaId;
+    private String placaNombre;
+    private String geomPlaca;
+    private List<String> nombreVolcanes;
+    private List<BigDecimal> latitudVolcanes;
+    private List<BigDecimal> longitudVolcanes;
 }
 

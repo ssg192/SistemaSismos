@@ -11,6 +11,8 @@ import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
 import mx.com.escom.sismos.external.rest.dto.PlacasDto;
 import mx.com.escom.sismos.external.rest.dto.SismoDto;
+import mx.com.escom.sismos.external.rest.dto.SismoWithVolcanAndPlacaDto;
+
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.math.BigDecimal;
@@ -45,10 +47,11 @@ public class SismoController {
     }
 
     @GET
-    @Path("/{idPlaca}/{idSismo}")
-    public Response obtenerPlacasSismoByIdPlaca(@PathParam("idPlaca") Integer idPlaca, @PathParam("idSismo") Integer idSismo) {
-        var placas = sismoService.listPlacaSismoByIdPlaca(idPlaca, idSismo).stream().map(PlacasDto::fromEntity).toList();
-        return Response.ok(placas).build();
+    //OBTENER SISMOS CON PLACAS Y VOLCANES
+    @Path("/{idSismos}")
+    public Response listSismosWithPlacaAndVolcan(@PathParam("idSismos") Integer idSismos) {
+        return Response.ok(sismoService.listSismosWithPlacaAndVolcan(idSismos).stream().map(SismoWithVolcanAndPlacaDto::fromEntity).toList())
+                .build();
     }
 
 }
