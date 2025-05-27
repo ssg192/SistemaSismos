@@ -106,7 +106,7 @@ CREATE TABLE volcanes (
   CREATE TABLE volcanes_afectados (
     id_volcan INT NOT NULL,
     id_registros_sismos INT NOT NULL,
-    PRIMARY KEY (id_volcan, id),
+    PRIMARY KEY (id_volcan, id_registros_sismos),
     FOREIGN KEY (id_volcan) REFERENCES volcanes(id_volcan),
     FOREIGN KEY (id_registros_sismos) REFERENCES registros_sismos(id_registros_sismos)
   );
