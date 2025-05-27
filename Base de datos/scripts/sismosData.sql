@@ -18,6 +18,7 @@
 --
 -- Dumping data for table `placas`
 --
+USE sismos;
 
 INSERT INTO placas (nombre, descripcion, geom)
 VALUES (
