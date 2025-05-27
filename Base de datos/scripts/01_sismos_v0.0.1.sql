@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS `sismos`.`sensores` (
   `red` varchar(10) NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 7
+AUTO_INCREMENT = 7;
 -- Crear la tabla
 CREATE TABLE volcanes (
     id_volcan INT AUTO_INCREMENT PRIMARY KEY,
