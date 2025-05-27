@@ -178,6 +178,9 @@ INSERT INTO sismos.sensores (codigo, nombre, estado, latitud, longitud, red) VAL
 ('ZIIG', 'Zihuatanejo', 'Guerrero', 17.6069, -101.4645, 'MX (IG)'),
 ('ZUVM', 'Zumpango', 'Estado de México', 19.8265, -99.0775, 'VM');
 
+
+INSERT INTO `volcanes` VALUES (1,'Cerro Prieto',32.4180,-115.3080),(2,'Ceboruco Volcano',21.1300,-104.5100),(3,'Volcán de Colima',19.5100,-103.6200),(4,'Cerro Pelon',19.8596,-101.4289),(5,'Volcán Evermann',18.7833,-110.9500),(6,'Volcán Paricutín',19.4930,-102.2510),(7,'Volcán San Andrés',19.8052,-100.5972),(8,'Volcán Jorullo',18.9720,-101.7180),(9,'Volcán Chichonal',17.3600,-93.2277),(10,'Volcán Derrumbado Rojo',19.2880,-97.4575),(11,'Volcán Popocatépetl',19.0200,-98.6200),(12,'Volcán de San Martín',18.5574,-95.2004);
+
 --
 -- Dumping events for database 'sismos'
 --
