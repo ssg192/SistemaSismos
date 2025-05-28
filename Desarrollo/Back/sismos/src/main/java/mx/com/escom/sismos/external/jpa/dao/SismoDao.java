@@ -34,27 +34,26 @@ public class SismoDao implements SismoRepository {
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
             SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
-            FROM registros_sismos rs 
+            FROM registros_sismos rs
             LIMIT :numeroPagina OFFSET :numeroFila
             """;
     private static final String PARAM_BUSQUEDA = """
-                select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion 
+                select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion
                 from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud;
             """;
 
     private static final String QUERY_FIND_SISMOS_WITH_PLACA_AND_VOLCAN = """
-        select p.nombre, ST_AsText(p.geom), rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus, 
+        select p.nombre, ST_AsText(p.geom), rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus,
         GROUP_CONCAT(v.nombre) as nombre_volcan, GROUP_CONCAT(v.latitud) as latitud_volcan, GROUP_CONCAT(v.longitud) as longitud_volcan from placas p
         join registros_sismos rs on rs.placa_id=p.placa_id
         join volcanes_afectados va on va.id_registros_sismos=rs.id_registros_sismos
         join volcanes v on v.id_volcan=va.id_volcan
         where rs.id_registros_sismos=:idSismo
         group by p.nombre, p.geom, rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus;
-            """;
+        """;
 
     private static final String PARAM_FECHA = "fecha";
     private static final String PARAM_MAGNITUD = "magnitud";
-    private static final String PARAM_ID_PLACA = "idPlaca";
     private static final String PARAM_ID_SISMOS = "idSismo";
     private static final String PARAM_NUM_PAGINAS = "numPaginas";
     private static final String PARAM_CANTIDAD_FILAS = "cantidadFilas";
@@ -113,8 +112,8 @@ public class SismoDao implements SismoRepository {
                 .referenciaLocalizacion((String) sismo[6])
                 .estatus((String) sismo[7])
                 .nombreVolcanes(List.of(((String) sismo[8]).split(",")))
-                .latitudVolcanes(List.of(((String) sismo[9]).split(",")).stream().map(BigDecimal::new).toList())
-                .longitudVolcanes(List.of(((String) sismo[10]).split(",")).stream().map(BigDecimal::new).toList())
+                .latitudVolcanes(Stream.of(((String) sismo[9]).split(",")).map(BigDecimal::new).toList())
+                .longitudVolcanes(Stream.of(((String) sismo[10]).split(",")).map(BigDecimal::new).toList())
                 .build()
         ).toList();
                 
