@@ -5,14 +5,15 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import mx.com.escom.paginacion.Paginacion;
 import mx.com.escom.paginacion.PaginacionDTO;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
-import mx.com.escom.sismos.external.rest.dto.PlacasDto;
 import mx.com.escom.sismos.external.rest.dto.SismoDto;
 import mx.com.escom.sismos.external.rest.dto.SismoWithVolcanAndPlacaDto;
-
+import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
+import org.eclipse.microprofile.openapi.annotations.media.Content;
+import org.eclipse.microprofile.openapi.annotations.media.Schema;
+import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.math.BigDecimal;
@@ -33,6 +34,7 @@ public class SismoController {
     }
 
     @GET
+    @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = SismoDto.class)))
     public Response obtenerSismos(@BeanParam PaginacionDTO paginacion) {
         return Response.ok(sismoService.listaSismos(paginacion.toEntity()).stream().map(SismoDto::fromEntity).toList())
                 .build();
@@ -40,6 +42,7 @@ public class SismoController {
 
     @POST
     @Path("/{fecha}/{magnitud}")
+    @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = BusquedaSismoDto.class)))
     public Response busquedaSismo(@PathParam("fecha") LocalDate fecha, @PathParam("magnitud") BigDecimal magnitud) {
         var busqueda = sismoService.busquedaSismo(fecha, magnitud).stream().map(BusquedaSismoDto::fromEntity).toList();
         return Response.ok(busqueda).build();
@@ -47,8 +50,8 @@ public class SismoController {
     }
 
     @GET
-    //OBTENER SISMOS CON PLACAS Y VOLCANES
     @Path("/{idSismos}")
+    @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = SismoWithVolcanAndPlacaDto.class)))
     public Response listSismosWithPlacaAndVolcan(@PathParam("idSismos") Integer idSismos) {
         return Response.ok(sismoService.listSismosWithPlacaAndVolcan(idSismos).stream().map(SismoWithVolcanAndPlacaDto::fromEntity).toList())
                 .build();
