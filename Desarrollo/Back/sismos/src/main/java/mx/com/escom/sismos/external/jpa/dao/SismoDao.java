@@ -33,9 +33,9 @@ public class SismoDao implements SismoRepository {
             """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
-            SELECT rs.id, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
+            SELECT rs.id_registros_sismos, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
             FROM registros_sismos rs
-            LIMIT :numeroPagina OFFSET :numeroFila
+            LIMIT :numPaginas OFFSET :cantidadFilas
             """;
     private static final String PARAM_BUSQUEDA = """
                 select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion
