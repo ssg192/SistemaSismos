@@ -9,6 +9,7 @@
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/entity/Placas.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/entity/Sensores.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/entity/Sismo.java
+/Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/entity/Volcan.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/core/statemachine/package-info.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/jpa/dao/SensoresDao.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/jpa/dao/SismoDao.java
@@ -26,6 +27,7 @@
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/SensoresDto.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/SismoDto.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/SismoWithVolcanAndPlacaDto.java
+/Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/sismos/external/rest/dto/VolcanesDto.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/util/DateUtils.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/util/StringConstants.java
 /Users/a/sistemaSismos/SistemaSismos/Desarrollo/Back/sismos/src/main/java/mx/com/escom/util/enums/Numbers.java

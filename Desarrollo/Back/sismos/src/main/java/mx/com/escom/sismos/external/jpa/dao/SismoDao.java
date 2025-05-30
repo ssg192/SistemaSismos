@@ -46,7 +46,7 @@ public class SismoDao implements SismoRepository {
 
     private static final String QUERY_FIND_SISMOS_WITH_PLACA_AND_VOLCAN = """
             select p.nombre, ST_AsText(p.geom), rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus,
-            coalesce(GROUP_CONCAT(v.nombre), 'Sin volcan') as nombre_volcan, coalesce (GROUP_CONCAT(v.latitud), 0) as latitud_volcan,coalesce(GROUP_CONCAT(v.longitud), 0) as longitud_volcan from placas p
+            coalesce(GROUP_CONCAT(v.nombre), 'Sin volcanes afectados') as nombre_volcan, coalesce (GROUP_CONCAT(v.latitud), 0) as latitud_volcan,coalesce(GROUP_CONCAT(v.longitud), 0) as longitud_volcan from placas p
             join registros_sismos rs on rs.placa_id=p.placa_id
             left join volcanes_afectados va on va.id_registros_sismos=rs.id_registros_sismos
             left join volcanes v on v.id_volcan=va.id_volcan
