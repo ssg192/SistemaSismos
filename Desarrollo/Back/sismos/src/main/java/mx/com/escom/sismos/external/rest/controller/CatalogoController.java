@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.external.rest.dto.PlacasDto;
+import mx.com.escom.sismos.external.rest.dto.VolcanesDto;
 import org.eclipse.microprofile.openapi.annotations.Operation;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -30,10 +31,19 @@ public class CatalogoController {
     }
 
     @GET
+    @Path("/placas")
     @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = PlacasDto.class)))
     @Operation(operationId = "listCatalogoPlacas", summary = "Obtiene el catalogo de placas")
     public Response getCatalogoPlacas() {
         return Response.ok(sismoService.listAllPlacas().stream().map(PlacasDto::fromEntity).toList()).build();
+    }
+
+    @GET
+    @Path("/volcanes")
+    @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = VolcanesDto.class)))
+    @Operation(operationId = "listCatalogoVolcan", summary = "Obtiene el catalogo de volcanes")
+    public Response getCatalogoVolcan(){
+        return Response.ok(sismoService.listAllVolcanes().stream().map(VolcanesDto::fromEntity).toList()).build();
     }
 
 }

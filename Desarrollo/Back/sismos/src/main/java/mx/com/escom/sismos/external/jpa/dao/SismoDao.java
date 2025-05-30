@@ -8,8 +8,10 @@ import mx.com.escom.paginacion.Paginacion;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
+import mx.com.escom.sismos.core.entity.Volcan;
 import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.StandardBasicTypes;
+
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
@@ -33,7 +35,7 @@ public class SismoDao implements SismoRepository {
             """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
-            SELECT rs.id_registros_sismos, rs.fecha, rs.hora, rs.magnitud, rs.latitud, rs.longitud, rs.profundidad, rs.referencia_localizacion,rs.estatus,rs.placa_id
+            SELECT rs.id_registros_sismos, rs.fecha, rs.hora, rs.magnitud, rs.estatus,rs.referencia_localizacion
             FROM registros_sismos rs
             LIMIT :numPaginas OFFSET :cantidadFilas
             """;
@@ -43,14 +45,17 @@ public class SismoDao implements SismoRepository {
             """;
 
     private static final String QUERY_FIND_SISMOS_WITH_PLACA_AND_VOLCAN = """
-        select p.nombre, ST_AsText(p.geom), rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus,
-        coalesce(GROUP_CONCAT(v.nombre), 'Sin volcan') as nombre_volcan, coalesce (GROUP_CONCAT(v.latitud), 0) as latitud_volcan,coalesce(GROUP_CONCAT(v.longitud), 0) as longitud_volcan from placas p
-        join registros_sismos rs on rs.placa_id=p.placa_id
-        left join volcanes_afectados va on va.id_registros_sismos=rs.id_registros_sismos
-        left join volcanes v on v.id_volcan=va.id_volcan
-        where rs.id_registros_sismos=:idSismo
-        group by p.nombre, p.geom, rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus;
-        """;
+            select p.nombre, ST_AsText(p.geom), rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus,
+            coalesce(GROUP_CONCAT(v.nombre), 'Sin volcan') as nombre_volcan, coalesce (GROUP_CONCAT(v.latitud), 0) as latitud_volcan,coalesce(GROUP_CONCAT(v.longitud), 0) as longitud_volcan from placas p
+            join registros_sismos rs on rs.placa_id=p.placa_id
+            left join volcanes_afectados va on va.id_registros_sismos=rs.id_registros_sismos
+            left join volcanes v on v.id_volcan=va.id_volcan
+            where rs.id_registros_sismos=:idSismo
+            group by p.nombre, p.geom, rs.fecha, rs.magnitud, rs.latitud, rs.longitud, rs.referencia_localizacion, rs.estatus;
+            """;
+    private static final String QUERY_FIND_ALL_VOLCANES = """
+            select v.id_volcan, v.nombre, v.latitud,v.longitud from volcanes v;
+            """;
 
     private static final String PARAM_FECHA = "fecha";
     private static final String PARAM_MAGNITUD = "magnitud";
@@ -70,12 +75,8 @@ public class SismoDao implements SismoRepository {
                 .fecha(sismos[1] != null ? ((Date) sismos[1]).toLocalDate() : null)
                 .hora(sismos[2] != null ? ((Time) sismos[2]).toLocalTime() : null)
                 .magnitud((BigDecimal) sismos[3])
-                .latitud((BigDecimal) sismos[4])
-                .longitud((BigDecimal) sismos[5])
-                .profundidad((BigDecimal) sismos[6])
-                .referenciaLocalizacion((String) sismos[7])
-                .estatus((String) sismos[8])
-                .placaId((Integer) sismos[9])
+                .estatus((String) sismos[4])
+                .referenciaLocalizacion((String) sismos[5])
                 .build()
         ).toList();
     }
@@ -116,9 +117,8 @@ public class SismoDao implements SismoRepository {
                 .longitudVolcanes(Stream.of(((String) sismo[10]).split(",")).map(BigDecimal::new).toList())
                 .build()
         ).toList();
-                
 
-                
+
     }
 
     @Override
@@ -133,6 +133,19 @@ public class SismoDao implements SismoRepository {
                 .ubicacion((String) placa[3]).build()
 
         ).toList();
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<Volcan> findAllVolcans() {
+        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_FIND_ALL_VOLCANES)
+                .getResultStream();
+        return result.map(volcanes -> Volcan.builder()
+                .id((Integer) volcanes[0])
+                .nombre((String) volcanes[1])
+                .longitud((BigDecimal) volcanes[2])
+                .latitud((BigDecimal) volcanes[3])
+                .build()).toList();
     }
 
 }

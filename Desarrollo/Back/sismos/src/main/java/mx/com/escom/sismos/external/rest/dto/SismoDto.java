@@ -23,19 +23,9 @@ public class SismoDto {
     @JsonProperty
     private BigDecimal magnitud;
     @JsonProperty
-    private BigDecimal latitud;
-    @JsonProperty
-    private BigDecimal longitud;
-    @JsonProperty
-    private BigDecimal profundidad;
-    @JsonProperty
-    private String referenciaLocalizacion;
-    @JsonProperty
     private String estatus;
     @JsonProperty
-    private Integer placaId;
-
-
+    private String referenciaLocalizacion;
 
     public static SismoDto fromEntity(Sismo sismo) {
         return SismoDto.builder()
@@ -43,12 +33,8 @@ public class SismoDto {
                 .fecha(sismo.getFecha())
                 .hora(sismo.getHora())
                 .magnitud(sismo.getMagnitud())
-                .latitud(sismo.getLatitud())
-                .longitud(sismo.getLongitud())
-                .profundidad(sismo.getProfundidad())
-                .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
                 .estatus(sismo.getEstatus())
-                .placaId(sismo.getPlacaId())
+                .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
                 .build();
     }
 

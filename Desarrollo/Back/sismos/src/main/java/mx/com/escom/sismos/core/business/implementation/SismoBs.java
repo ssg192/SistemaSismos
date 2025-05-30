@@ -6,6 +6,8 @@ import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
+import mx.com.escom.sismos.core.entity.Volcan;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
@@ -39,6 +41,11 @@ public class SismoBs implements SismoService {
     @Override
     public List<Placas> listAllPlacas() {
         return sismoRepository.findAllPlacas();
+    }
+
+    @Override
+    public List<Volcan> listAllVolcanes() {
+        return sismoRepository.findAllVolcans();
     }
 
 }
