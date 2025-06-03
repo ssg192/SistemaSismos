@@ -1,4 +1,5 @@
 package mx.com.escom.sismos.core.business.implementation;
+import io.vavr.control.Either;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import mx.com.escom.paginacion.Paginacion;
@@ -7,6 +8,7 @@ import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
 import mx.com.escom.sismos.core.entity.Volcan;
+import mx.com.escom.util.error.ErrorCodesEnum;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -46,6 +48,20 @@ public class SismoBs implements SismoService {
     @Override
     public List<Volcan> listAllVolcanes() {
         return sismoRepository.findAllVolcans();
+    }
+
+    @Override
+    public Either<ErrorCodesEnum, Sismo> creteSismo(Sismo entity) {
+        /*
+          faltan validaciones
+         */
+        Sismo guardar = sismoRepository.saveSismo(entity);
+        if (guardar == null) {
+            return Either.left(ErrorCodesEnum.RNS001);
+        }
+        return Either.right(guardar);
+
+
     }
 
 }

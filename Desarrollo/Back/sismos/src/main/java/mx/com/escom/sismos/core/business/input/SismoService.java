@@ -1,8 +1,10 @@
 package mx.com.escom.sismos.core.business.input;
+import io.vavr.control.Either;
 import mx.com.escom.paginacion.Paginacion;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
 import mx.com.escom.sismos.core.entity.Volcan;
+import mx.com.escom.util.error.ErrorCodesEnum;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -14,4 +16,5 @@ public interface SismoService {
     List<Sismo> listSismosWithPlacaAndVolcan(Integer idSismos);
     List<Placas> listAllPlacas();
     List<Volcan> listAllVolcanes();
+    Either<ErrorCodesEnum, Sismo> creteSismo(Sismo entity);
 }

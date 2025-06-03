@@ -2,6 +2,7 @@ package mx.com.escom.sismos.external.rest.controller;
 
 
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -55,6 +56,12 @@ public class SismoController {
     public Response listSismosWithPlacaAndVolcan(@PathParam("idSismos") Integer idSismos) {
         return Response.ok(sismoService.listSismosWithPlacaAndVolcan(idSismos).stream().map(SismoWithVolcanAndPlacaDto::fromEntity).toList())
                 .build();
+    }
+
+    @POST
+    @Path("/registroSismo")
+    public Response registroSismo(@Valid SismoDto sismoDto) {
+        return sismoService.creteSismo(SismoDto::)
     }
 
 }

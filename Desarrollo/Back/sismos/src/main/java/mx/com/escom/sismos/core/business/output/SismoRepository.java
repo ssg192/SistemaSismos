@@ -16,6 +16,6 @@ public interface SismoRepository {
     List<Sismo> findSismosWithPlacaAndVolcan(Integer idSismos);
     List<Placas> findAllPlacas();
     List<Volcan>findAllVolcans();
-
+    Sismo saveSismo(Sismo sismo);
   }
 

@@ -9,6 +9,8 @@ import mx.com.escom.sismos.core.business.output.SismoRepository;
 import mx.com.escom.sismos.core.entity.Placas;
 import mx.com.escom.sismos.core.entity.Sismo;
 import mx.com.escom.sismos.core.entity.Volcan;
+import mx.com.escom.sismos.external.jpa.model.SismoJpa;
+import mx.com.escom.sismos.external.jpa.repository.SismoJpaRepository;
 import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.StandardBasicTypes;
 
@@ -24,10 +26,12 @@ public class SismoDao implements SismoRepository {
 
     @PersistenceUnit()
     private final EntityManager entityManagerReading;
+    private final SismoJpaRepository sismoJpaRepository;
 
     @Inject
-    public SismoDao(EntityManager entityManagerReading) {
+    public SismoDao(EntityManager entityManagerReading, SismoJpaRepository sismoJpaRepository) {
         this.entityManagerReading = entityManagerReading;
+        this.sismoJpaRepository = sismoJpaRepository;
     }
 
     private static final String QUERY_PARAM_CATALOGO_PLACAS = """
@@ -146,6 +150,11 @@ public class SismoDao implements SismoRepository {
                 .longitud((BigDecimal) volcanes[2])
                 .latitud((BigDecimal) volcanes[3])
                 .build()).toList();
+    }
+
+    @Override
+    public Sismo saveSismo(Sismo sismo) {
+        return sismoJpaRepository.saveAndFlush(SismoJpa.fromEntity(sismo)).toEntity();
     }
 
 }
