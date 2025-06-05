@@ -35,6 +35,6 @@ public class RegistroSismoPersistDto {
     private String estatus;
 
     public RegistroSismoPersistDto toEntity(){
-        return RegistroSismoPersistDto
+        return null;
     }
 }

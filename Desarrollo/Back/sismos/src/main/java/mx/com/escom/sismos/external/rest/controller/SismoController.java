@@ -61,7 +61,7 @@ public class SismoController {
     @POST
     @Path("/registroSismo")
     public Response registroSismo(@Valid SismoDto sismoDto) {
-        return sismoService.creteSismo(SismoDto::)
+        return null;
     }
 
 }

@@ -154,7 +154,7 @@ public class SismoDao implements SismoRepository {
 
     @Override
     public Sismo saveSismo(Sismo sismo) {
-        return sismoJpaRepository.saveAndFlush(SismoJpa.fromEntity(sismo)).toEntity();
+        return null;
     }
 
 }
