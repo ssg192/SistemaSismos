@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 mx\com\escom\util\error\ConstraintViolationExceptionMapper.class
 mx\com\escom\sismos\external\rest\dto\SismoDto$SismoDtoBuilder.class
 mx\com\escom\util\error\ErrorType.class
@@ -67,3 +68,9 @@ mx\com\escom\sismos\external\rest\dto\PlacasDto$PlacasDtoBuilder.class
 mx\com\escom\sismos\external\rest\dto\RegistroSismoPersistDto.class
 mx\com\escom\sismos\external\jpa\model\SismoJpa.class
 mx\com\escom\util\DateUtils.class
+=======
+mx/com/escom/sismos/external/rest/dto/RegistroSismoDto$RegistroSismoDtoBuilder.class
+mx/com/escom/sismos/external/rest/dto/RegistroSismoDto.class
+mx/com/escom/sismos/external/rest/dto/SismoWithVolcanAndPlacaDto.class
+mx/com/escom/sismos/external/rest/dto/SismoWithVolcanAndPlacaDto$SismoWithVolcanAndPlacaDtoBuilder.class
+>>>>>>> aa9ff2b5 (feat: implementacion de creaacion de sismo)

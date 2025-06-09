@@ -9,8 +9,10 @@ import jakarta.ws.rs.core.Response;
 import mx.com.escom.paginacion.PaginacionDTO;
 import mx.com.escom.sismos.core.business.input.SismoService;
 import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
+import mx.com.escom.sismos.external.rest.dto.RegistroSismoDto;
 import mx.com.escom.sismos.external.rest.dto.SismoDto;
 import mx.com.escom.sismos.external.rest.dto.SismoWithVolcanAndPlacaDto;
+import mx.com.escom.util.error.ErrorMapper;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
@@ -60,8 +62,10 @@ public class SismoController {
 
     @POST
     @Path("/registroSismo")
-    public Response registroSismo(@Valid SismoDto sismoDto) {
-        return null;
+    @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(implementation = Boolean.class)))
+    public Response registroSismo(@Valid RegistroSismoDto registroSismoDto) {
+        return sismoService.create(registroSismoDto.toEntity()).map(Response::ok)
+                .getOrElseGet(ErrorMapper::errorCodeToResponseBuilder).build();
     }
 
 }

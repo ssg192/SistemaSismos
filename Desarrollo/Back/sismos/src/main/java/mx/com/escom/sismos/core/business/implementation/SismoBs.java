@@ -51,17 +51,12 @@ public class SismoBs implements SismoService {
     }
 
     @Override
-    public Either<ErrorCodesEnum, Sismo> creteSismo(Sismo entity) {
-        /*
-          faltan validaciones
-         */
-        Sismo guardar = sismoRepository.saveSismo(entity);
-        if (guardar == null) {
+    public Either<ErrorCodesEnum, Boolean> create(Sismo entity) {
+        if(entity == null) {
             return Either.left(ErrorCodesEnum.RNS001);
         }
-        return Either.right(guardar);
-
-
+        sismoRepository.saveSismo(entity);
+        return Either.right(true);
     }
 
 }

@@ -42,7 +42,7 @@ public class SismoJpa {
     @Column(name = "placa_id")
     private Integer placaId;
 
-    public static SismoJpa fromEntity(SismoJpa sismo) {
+    public static SismoJpa fromEntity(Sismo sismo) {
         return SismoJpa.builder()
                 .id(sismo.getId())
                 .fecha(sismo.getFecha())

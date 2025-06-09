@@ -16,5 +16,5 @@ public interface SismoService {
     List<Sismo> listSismosWithPlacaAndVolcan(Integer idSismos);
     List<Placas> listAllPlacas();
     List<Volcan> listAllVolcanes();
-    Either<ErrorCodesEnum, Sismo> creteSismo(Sismo entity);
+    Either<ErrorCodesEnum, Boolean> create(Sismo entity);
 }
