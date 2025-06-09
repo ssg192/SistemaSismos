@@ -31,8 +31,8 @@ public class SismoBs implements SismoService {
     }
 
     @Override
-    public List<Sismo> busquedaSismo(LocalDate fecha, BigDecimal magnitud) {
-        return sismoRepository.BusquedaSismos(fecha,magnitud);
+    public List<Sismo> busquedaSismo(LocalDate fechaInicio, LocalDate fechaFin) {
+        return sismoRepository.BusquedaSismos(fechaInicio,fechaFin);
     }
 
     @Override

@@ -3,6 +3,7 @@ package mx.com.escom.sismos.external.rest.controller;
 
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -19,7 +20,6 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 
@@ -44,10 +44,10 @@ public class SismoController {
     }
 
     @POST
-    @Path("/{fecha}/{magnitud}")
+    @Path("Busqueda-by-periodo")
     @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = BusquedaSismoDto.class)))
-    public Response busquedaSismo(@PathParam("fecha") LocalDate fecha, @PathParam("magnitud") BigDecimal magnitud) {
-        var busqueda = sismoService.busquedaSismo(fecha, magnitud).stream().map(BusquedaSismoDto::fromEntity).toList();
+    public Response busquedaSismo(@NotNull @QueryParam("FechaInicio")LocalDate fechaInicio,@NotNull @QueryParam("FechaFin")LocalDate fechaFin) {
+        var busqueda = sismoService.busquedaSismo(fechaInicio,fechaFin).stream().map(BusquedaSismoDto::fromEntity).toList();
         return Response.ok(busqueda).build();
 
     }

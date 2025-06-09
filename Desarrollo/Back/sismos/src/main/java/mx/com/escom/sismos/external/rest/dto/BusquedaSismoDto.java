@@ -19,7 +19,7 @@ import java.time.LocalTime;
 public class BusquedaSismoDto {
 
     @JsonProperty
-    private LocalDate fecha;
+    private Integer id;
     @JsonProperty
     private LocalTime hora;
     @JsonProperty
@@ -30,19 +30,15 @@ public class BusquedaSismoDto {
     private BigDecimal latitud;
     @JsonProperty
     private BigDecimal longitud;
-    @JsonProperty
-    private String estatus;
-
 
     public static BusquedaSismoDto fromEntity(Sismo sismo) {
         return BusquedaSismoDto.builder()
-                .fecha(sismo.getFecha())
+                .id(sismo.getId())
                 .hora(sismo.getHora())
                 .magnitud(sismo.getMagnitud())
                 .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
                 .latitud(sismo.getLatitud())
                 .longitud(sismo.getLongitud())
-                .estatus(sismo.getEstatus())
                 .build();
     }
 

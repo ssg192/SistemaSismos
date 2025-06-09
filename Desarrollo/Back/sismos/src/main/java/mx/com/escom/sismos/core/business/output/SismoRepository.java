@@ -12,7 +12,7 @@ import java.util.List;
 public interface SismoRepository {
 
     List<Sismo> obtenerSismos(Paginacion paginacion);
-    List<Sismo>BusquedaSismos(LocalDate fecha, BigDecimal magnitud);
+    List<Sismo>BusquedaSismos(LocalDate fechaInicio, LocalDate fechaFin);
     List<Sismo> findSismosWithPlacaAndVolcan(Integer idSismos);
     List<Placas> findAllPlacas();
     List<Volcan>findAllVolcans();

@@ -39,13 +39,13 @@ public class SismoDao implements SismoRepository {
             """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
-            SELECT rs.id_registros_sismos, rs.fecha, rs.hora, rs.magnitud, rs.estatus,rs.referencia_localizacion
+            SELECT rs.id_registros_sismos,rs.magnitud, rs.hora, rs.magnitud, rs.estatus,rs.referencia_localizacion
             FROM registros_sismos rs
             LIMIT :numPaginas OFFSET :cantidadFilas
             """;
-    private static final String PARAM_BUSQUEDA = """
-                select rs.fecha, rs.magnitud, rs.estatus, rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion
-                from registros_sismos rs where rs.fecha = :fecha and  rs.magnitud = :magnitud;
+    private static final String QUERY_PARAM_BUSQUEDA_SISMOS = """
+select  rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion from registros_sismos rs
+where rs.fecha >= :fechaInicio and rs.fecha <= :fechaFin;
             """;
 
     private static final String QUERY_FIND_SISMOS_WITH_PLACA_AND_VOLCAN = """
@@ -61,7 +61,8 @@ public class SismoDao implements SismoRepository {
             select v.id_volcan, v.nombre, v.latitud,v.longitud from volcanes v;
             """;
 
-    private static final String PARAM_FECHA = "fecha";
+    private static final String PARAM_FECHA_INICIO = "fechaInicio";
+    private static final String PARAM_FECHA_FIN = "fechaFin";
     private static final String PARAM_MAGNITUD = "magnitud";
     private static final String PARAM_ID_SISMOS = "idSismo";
     private static final String PARAM_NUM_PAGINAS = "numPaginas";
@@ -87,20 +88,22 @@ public class SismoDao implements SismoRepository {
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<Sismo> BusquedaSismos(LocalDate fecha, BigDecimal magnitud) {
-        Stream<Object[]> busqueda = entityManagerReading.createNativeQuery(PARAM_BUSQUEDA).setParameter(PARAM_FECHA, fecha).setParameter(PARAM_MAGNITUD, magnitud).getResultStream();
-        return busqueda.map(sismo -> Sismo.builder()
-                .fecha(sismo[0] != null ? ((Date) sismo[0]).toLocalDate() : null)
-                .magnitud((BigDecimal) sismo[1])
-                .estatus((String) sismo[2])
-                .hora(sismo[3] != null ? ((Time) sismo[3]).toLocalTime() : null)
-                .latitud((BigDecimal) sismo[4])
-                .longitud((BigDecimal) sismo[5])
-                .referenciaLocalizacion((String) sismo[6])
-                .build()
-
-        ).toList();
+    public List<Sismo> BusquedaSismos(LocalDate fechaInicio, LocalDate fechaFin) {
+        Stream<Object[]>result = entityManagerReading.createNativeQuery(QUERY_PARAM_BUSQUEDA_SISMOS)
+                .setParameter(PARAM_FECHA_INICIO,fechaInicio)
+                .setParameter(PARAM_FECHA_FIN,fechaFin)
+                .getResultStream();
+        return result.map(busqueda-> Sismo.builder()
+                .id((Integer) busqueda[0])
+                        .magnitud((BigDecimal) busqueda[1])
+                        .hora(busqueda[2] != null ? ((Time) busqueda[2]).toLocalTime() : null)
+                .latitud((BigDecimal) busqueda[3])
+                .longitud((BigDecimal) busqueda[4])
+                .referenciaLocalizacion((String) busqueda[5])
+                .build())
+                .toList();
     }
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -154,7 +157,7 @@ public class SismoDao implements SismoRepository {
 
     @Override
     public Sismo saveSismo(Sismo sismo) {
-        return null;
+        return sismoJpaRepository.saveAndFlush(SismoJpa.fromEntity(sismo)).toEntity();
     }
 
 }
