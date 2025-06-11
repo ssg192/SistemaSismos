@@ -17,13 +17,102 @@ function Inicio() {
   const [fechaFiltro, setFechaFiltro] = useState("");
   const [magnitudFiltro, setMagnitudFiltro] = useState("");
   const [noResults, setNoResults] = useState(false);
-
+  const [placas, setPlacas] = useState([]);
+  const [volcanes, setVolcanes] = useState([]);
+  const [sensores, setSensores] = useState([]);
   const { theme, toggleTheme } = useTheme();
   const URL_API = "http://localhost:8080/inicio";
 
   useEffect(() => {
     fetchSismos();
+    
+    fetch("http://localhost:8080/catalogos/placas")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log("Datos del servidor:", data); // 👈 Debug
+      
+      const geojsonFeatures = data?.map((placa) =>
+        wktMultiPolygonToGeoJSON(placa.ubicacion, {
+          id: placa.id,
+          nombre: placa.nombre,
+          descripcion: placa.descripcion
+        })
+      ).filter(Boolean);
+      
+      console.log("Placas convertidas a GeoJSON:", geojsonFeatures); // 👈 Debug
+      setPlacas(geojsonFeatures);
+    })
+    .catch(error => {
+      console.error("Error cargando placas:", error); // 👈 Debug
+    });
+
+    fetch("http://localhost:8080/catalogos/volcanes")
+    .then(r => r.json())
+    .then(data => {
+      // parsea y filtra SOLO objetos con lat y lng válidos
+      const parsed = data
+        .map(v => ({
+          id:          v.id,
+          descripcion: v.descripcion,
+          // fíjate bien en el nombre real de los campos que te devuelve tu API:
+          lat:         parseFloat(v.longitud),    
+          lng:         parseFloat(v.latitud)
+        }))
+        .filter(v => !isNaN(v.lat) && !isNaN(v.lng));
+      console.log("Volcanes válidos:", parsed);
+      setVolcanes(parsed);
+    })
+    .catch(console.error);
+
+
+    //fetch a los sensores
+    fetch('http://localhost:8080/inicio/sensores')
+      .then(res => {
+        if (!res.ok) throw new Error('Error al cargar sensores');
+        return res.json();
+      })
+      .then(data => {
+        // Imaginamos que el endpoint devuelve un array:
+        setSensores(data);
+      })
+      .catch(err => console.error(err));
   }, []);
+
+    // Función para convertir WKT MultiPolygon a GeoJSON
+    function wktMultiPolygonToGeoJSON(wkt, props = {}) {
+      if (!wkt.startsWith("MULTIPOLYGON")) return null;
+    
+      // Eliminar MULTIPOLYGON(( y )) al inicio/final
+      const content = wkt
+        .replace("MULTIPOLYGON(((", "")
+        .replace(")))", "");
+    
+      // Cada polígono puede tener múltiples anillos separados por ')), (('
+      // Pero en muchos casos solo hay uno, así que asumimos eso por ahora
+      const rings = content.split(")), ((");
+    
+      const coordinates = rings.map(ring => {
+        return [
+          ring.split(",").map(coord => {
+            const [lonStr, latStr] = coord.trim().split(/\s+/);
+            const lat = parseFloat(latStr);
+            const lon = parseFloat(lonStr);
+            return [lon, lat]; // Leaflet espera [lat, lon]
+          })
+        ];
+      });
+    
+      return {
+        type: "Feature",
+        properties: props,
+        geometry: {
+          type: "MultiPolygon",
+          coordinates: coordinates
+        }
+      };
+    }
+  
+  
 
   const fetchSismos = async () => {
     try {
@@ -169,7 +258,13 @@ function Inicio() {
 
       {/* Mapa */}
       <div className="map-container">
-        <MapaMexico coordenadas={coordenadas} theme={theme} />
+        <MapaMexico 
+          coordenadas={coordenadas} 
+          theme={theme} 
+          placas={placas}  // 👈 Esta línea es crucial
+          volcanes={volcanes}
+          sensores={sensores} // 👈 Agregar volcanes
+        />
       </div>
 
       {/* Menú lateral */}

@@ -1,4 +1,4 @@
-mx/com/escom/sismos/external/rest/dto/RegistroSismoDto$RegistroSismoDtoBuilder.class
-mx/com/escom/sismos/external/rest/dto/RegistroSismoDto.class
-mx/com/escom/sismos/external/rest/dto/SismoWithVolcanAndPlacaDto.class
-mx/com/escom/sismos/external/rest/dto/SismoWithVolcanAndPlacaDto$SismoWithVolcanAndPlacaDtoBuilder.class
+mx\com\escom\sismos\external\rest\dto\RegistroSismoDto$RegistroSismoDtoBuilder.class
+mx\com\escom\sismos\external\rest\dto\SismoWithVolcanAndPlacaDto.class
+mx\com\escom\sismos\external\rest\dto\RegistroSismoDto.class
+mx\com\escom\sismos\external\rest\dto\SismoWithVolcanAndPlacaDto$SismoWithVolcanAndPlacaDtoBuilder.class
