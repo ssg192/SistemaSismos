@@ -11,10 +11,8 @@ import mx.com.escom.sismos.core.entity.Sismo;
 import mx.com.escom.sismos.core.entity.Volcan;
 import mx.com.escom.sismos.external.jpa.model.SismoJpa;
 import mx.com.escom.sismos.external.jpa.repository.SismoJpaRepository;
-import mx.com.escom.util.enums.Numbers;
 import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.StandardBasicTypes;
-import org.hibernate.type.descriptor.DateTimeUtils;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -64,12 +62,13 @@ public class SismoDao implements SismoRepository {
             """;
     private static final String QUERY_FIND_ALL_SISMOS_VOLCANES_AND_PLACAS = """
             select rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion,
-            coalesce (v.nombre, 'Sin volcan afectado') as volcan_afectado, coalesce(v.latitud,0) as latitud_volcan,
-            coalesce(v.longitud,0) as longitud_volcan,
+            coalesce(GROUP_CONCAT(v.nombre), 'Sin volcanes afectados') as volcan_afectado, coalesce (GROUP_CONCAT(v.latitud), 0) as latitud_volcan,
+            coalesce(GROUP_CONCAT(v.longitud), 0) as longitud_volcan,
             p.nombre as sismo_naciente from registros_sismos rs
             left join volcanes_afectados va on va.id_registros_sismos = rs.id_registros_sismos
             left join volcanes v on v.id_volcan = va.id_volcan
             left join placas p on p.placa_id = rs.placa_id
+            group by rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion, p.nombre
             """;
 
     private static final String PARAM_FECHA_INICIO = "fechaInicio";
@@ -172,7 +171,7 @@ public class SismoDao implements SismoRepository {
     }
 
     @Override
-    @SuppressWarnings("uncheacked")
+    @SuppressWarnings("unchecked")
     public List<Sismo> obtenerRegistrosCsv() {
         Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_FIND_ALL_SISMOS_VOLCANES_AND_PLACAS)
                 .getResultStream();
@@ -183,11 +182,9 @@ public class SismoDao implements SismoRepository {
                 .latitud((BigDecimal) datos[3])
                 .longitud((BigDecimal) datos[4])
                 .referenciaLocalizacion((String) datos[5])
-                .volcan(Volcan.builder()
-                        .nombre((String) datos[6])
-                        .latitud((BigDecimal) datos[7])
-                        .longitud((BigDecimal) datos[8])
-                        .build())
+                .nombreVolcanes(List.of(((String) datos[6]).split(",")))
+                .latitudVolcanes(Stream.of(((String) datos[7]).split(",")).map(BigDecimal::new).toList())
+                .longitudVolcanes(Stream.of(((String) datos[8]).split(",")).map(BigDecimal::new).toList())
                 .placaNombre((String) datos[9])
                 .build()).toList();
     }

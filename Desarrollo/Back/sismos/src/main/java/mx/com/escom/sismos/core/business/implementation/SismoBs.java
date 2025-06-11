@@ -13,6 +13,7 @@ import mx.com.escom.util.error.ErrorCodesEnum;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @ApplicationScoped
@@ -78,10 +79,22 @@ public class SismoBs implements SismoService {
             sb.append(formatear(s.getLongitud())).append(",");
             sb.append(escaparCsv(s.getReferenciaLocalizacion())).append(",");
 
-            if (s.getVolcan() != null) {
-                sb.append(escaparCsv(s.getVolcan().getNombre())).append(",");
-                sb.append(formatear(s.getVolcan().getLatitud())).append(",");
-                sb.append(formatear(s.getVolcan().getLongitud())).append(",");
+            List<String> nombres = s.getNombreVolcanes();
+            List<BigDecimal> lats = s.getLatitudVolcanes();
+            List<BigDecimal> lons = s.getLongitudVolcanes();
+
+            if (nombres != null && !nombres.isEmpty()) {
+                sb.append(escaparCsv(String.join("|", nombres))).append(",");
+                sb.append(escaparCsv(
+                        lats.stream()
+                                .map(this::formatear)
+                                .collect(Collectors.joining("|"))
+                )).append(",");
+                sb.append(escaparCsv(
+                        lons.stream()
+                                .map(this::formatear)
+                                .collect(Collectors.joining("|"))
+                )).append(",");
             } else {
                 sb.append(",,,");
 
@@ -92,6 +105,7 @@ public class SismoBs implements SismoService {
 
         return sb.toString();
     }
+
 
     private String formatear(BigDecimal valor) {
         return valor != null ? valor.toPlainString() : "";
