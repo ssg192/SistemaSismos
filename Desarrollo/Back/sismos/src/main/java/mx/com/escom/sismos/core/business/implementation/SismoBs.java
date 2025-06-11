@@ -59,4 +59,49 @@ public class SismoBs implements SismoService {
         return Either.right(true);
     }
 
+    @Override
+    public String listAllRegistros() {
+        List<Sismo> datos = sismoRepository.obtenerRegistrosCsv();
+        return convertirListaASCsv(datos);
+    }
+
+    private String convertirListaASCsv(List<Sismo> lista) {
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("id,magnitud,hora,latitud,longitud,referencia_localizacion,volcan_nombre,volcan_latitud,volcan_longitud,placa_nombre\n");
+
+        for (Sismo s : lista) {
+            sb.append(s.getId()).append(",");
+            sb.append(formatear(s.getMagnitud())).append(",");
+            sb.append(s.getHora() != null ? s.getHora() : "").append(",");
+            sb.append(formatear(s.getLatitud())).append(",");
+            sb.append(formatear(s.getLongitud())).append(",");
+            sb.append(escaparCsv(s.getReferenciaLocalizacion())).append(",");
+
+            if (s.getVolcan() != null) {
+                sb.append(escaparCsv(s.getVolcan().getNombre())).append(",");
+                sb.append(formatear(s.getVolcan().getLatitud())).append(",");
+                sb.append(formatear(s.getVolcan().getLongitud())).append(",");
+            } else {
+                sb.append(",,,");
+
+            }
+
+            sb.append(escaparCsv(s.getPlacaNombre())).append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    private String formatear(BigDecimal valor) {
+        return valor != null ? valor.toPlainString() : "";
+    }
+
+    private String escaparCsv(String valor) {
+        if (valor == null) return "";
+        if (valor.contains(",") || valor.contains("\"") || valor.contains("\n")) {
+            return "\"" + valor.replace("\"", "\"\"") + "\"";
+        }
+        return valor;
+    }
 }

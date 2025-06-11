@@ -17,4 +17,5 @@ public interface SismoService {
     List<Placas> listAllPlacas();
     List<Volcan> listAllVolcanes();
     Either<ErrorCodesEnum, Boolean> create(Sismo entity);
+    String listAllRegistros();
 }

@@ -11,8 +11,10 @@ import mx.com.escom.sismos.core.entity.Sismo;
 import mx.com.escom.sismos.core.entity.Volcan;
 import mx.com.escom.sismos.external.jpa.model.SismoJpa;
 import mx.com.escom.sismos.external.jpa.repository.SismoJpaRepository;
+import mx.com.escom.util.enums.Numbers;
 import org.hibernate.query.TypedParameterValue;
 import org.hibernate.type.StandardBasicTypes;
+import org.hibernate.type.descriptor.DateTimeUtils;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -44,8 +46,8 @@ public class SismoDao implements SismoRepository {
             LIMIT :numPaginas OFFSET :cantidadFilas
             """;
     private static final String QUERY_PARAM_BUSQUEDA_SISMOS = """
-select  rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion from registros_sismos rs
-where rs.fecha >= :fechaInicio and rs.fecha <= :fechaFin;
+            select  rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion from registros_sismos rs
+            where rs.fecha >= :fechaInicio and rs.fecha <= :fechaFin;
             """;
 
     private static final String QUERY_FIND_SISMOS_WITH_PLACA_AND_VOLCAN = """
@@ -60,13 +62,22 @@ where rs.fecha >= :fechaInicio and rs.fecha <= :fechaFin;
     private static final String QUERY_FIND_ALL_VOLCANES = """
             select v.id_volcan, v.nombre, v.latitud,v.longitud from volcanes v;
             """;
+    private static final String QUERY_FIND_ALL_SISMOS_VOLCANES_AND_PLACAS = """
+            select rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion,
+            coalesce (v.nombre, 'Sin volcan afectado') as volcan_afectado, coalesce(v.latitud,0) as latitud_volcan,
+            coalesce(v.longitud,0) as longitud_volcan,
+            p.nombre as sismo_naciente from registros_sismos rs
+            left join volcanes_afectados va on va.id_registros_sismos = rs.id_registros_sismos
+            left join volcanes v on v.id_volcan = va.id_volcan
+            left join placas p on p.placa_id = rs.placa_id
+            """;
 
     private static final String PARAM_FECHA_INICIO = "fechaInicio";
     private static final String PARAM_FECHA_FIN = "fechaFin";
-    private static final String PARAM_MAGNITUD = "magnitud";
     private static final String PARAM_ID_SISMOS = "idSismo";
     private static final String PARAM_NUM_PAGINAS = "numPaginas";
     private static final String PARAM_CANTIDAD_FILAS = "cantidadFilas";
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -89,18 +100,18 @@ where rs.fecha >= :fechaInicio and rs.fecha <= :fechaFin;
     @Override
     @SuppressWarnings("unchecked")
     public List<Sismo> BusquedaSismos(LocalDate fechaInicio, LocalDate fechaFin) {
-        Stream<Object[]>result = entityManagerReading.createNativeQuery(QUERY_PARAM_BUSQUEDA_SISMOS)
-                .setParameter(PARAM_FECHA_INICIO,fechaInicio)
-                .setParameter(PARAM_FECHA_FIN,fechaFin)
+        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_PARAM_BUSQUEDA_SISMOS)
+                .setParameter(PARAM_FECHA_INICIO, fechaInicio)
+                .setParameter(PARAM_FECHA_FIN, fechaFin)
                 .getResultStream();
-        return result.map(busqueda-> Sismo.builder()
-                .id((Integer) busqueda[0])
+        return result.map(busqueda -> Sismo.builder()
+                        .id((Integer) busqueda[0])
                         .magnitud((BigDecimal) busqueda[1])
                         .hora(busqueda[2] != null ? ((Time) busqueda[2]).toLocalTime() : null)
-                .latitud((BigDecimal) busqueda[3])
-                .longitud((BigDecimal) busqueda[4])
-                .referenciaLocalizacion((String) busqueda[5])
-                .build())
+                        .latitud((BigDecimal) busqueda[3])
+                        .longitud((BigDecimal) busqueda[4])
+                        .referenciaLocalizacion((String) busqueda[5])
+                        .build())
                 .toList();
     }
 
@@ -158,6 +169,27 @@ where rs.fecha >= :fechaInicio and rs.fecha <= :fechaFin;
     @Override
     public Sismo saveSismo(Sismo sismo) {
         return sismoJpaRepository.saveAndFlush(SismoJpa.fromEntity(sismo)).toEntity();
+    }
+
+    @Override
+    @SuppressWarnings("uncheacked")
+    public List<Sismo> obtenerRegistrosCsv() {
+        Stream<Object[]> result = entityManagerReading.createNativeQuery(QUERY_FIND_ALL_SISMOS_VOLCANES_AND_PLACAS)
+                .getResultStream();
+        return result.map(datos -> Sismo.builder()
+                .id((Integer) datos[0])
+                .magnitud((BigDecimal) datos[1])
+                .hora(datos[2] != null ? ((Time) datos[2]).toLocalTime() : null)
+                .latitud((BigDecimal) datos[3])
+                .longitud((BigDecimal) datos[4])
+                .referenciaLocalizacion((String) datos[5])
+                .volcan(Volcan.builder()
+                        .nombre((String) datos[6])
+                        .latitud((BigDecimal) datos[7])
+                        .longitud((BigDecimal) datos[8])
+                        .build())
+                .placaNombre((String) datos[9])
+                .build()).toList();
     }
 
 }

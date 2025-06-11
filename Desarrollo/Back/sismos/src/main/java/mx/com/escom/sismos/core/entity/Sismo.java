@@ -31,6 +31,8 @@ public class Sismo {
     private List<String> nombreVolcanes;
     private List<BigDecimal> latitudVolcanes;
     private List<BigDecimal> longitudVolcanes;
+    private Volcan volcan;
+    private Placas placas;
 
 }
 

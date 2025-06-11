@@ -20,6 +20,7 @@ import org.eclipse.microprofile.openapi.annotations.media.Schema;
 import org.eclipse.microprofile.openapi.annotations.responses.APIResponse;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 
 
@@ -66,6 +67,16 @@ public class SismoController {
     public Response registroSismo(@Valid RegistroSismoDto registroSismoDto) {
         return sismoService.create(registroSismoDto.toEntity()).map(Response::ok)
                 .getOrElseGet(ErrorMapper::errorCodeToResponseBuilder).build();
+    }
+
+    @GET
+    @Path("descargar-csv")
+    @Produces("text/csv")
+    public Response descargarCsv() {
+        String csv = sismoService.listAllRegistros();
+        return Response.ok(csv.getBytes(StandardCharsets.UTF_8))
+                .header("Content-Disposition", "attachment; filename=\"sismos.csv\"")
+                .build();
     }
 
 }
