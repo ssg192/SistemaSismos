@@ -43,7 +43,7 @@ public class SismoController {
                 .build();
     }
 
-    @POST
+    @GET
     @Path("Busqueda-by-periodo")
     @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = BusquedaSismoDto.class)))
     public Response busquedaSismo(@NotNull @QueryParam("FechaInicio")LocalDate fechaInicio,@NotNull @QueryParam("FechaFin")LocalDate fechaFin) {
