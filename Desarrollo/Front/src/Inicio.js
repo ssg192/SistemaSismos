@@ -4,7 +4,8 @@ import { useTheme } from "./useTheme";
 import VistaModuloEducativo from "./VistaModuloEducativo";
 import VistaCapacitaciones from "./VistaCapacitaciones";
 import "./components/Inicio.css";
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faDownload } from '@fortawesome/free-solid-svg-icons';
 function Inicio() {
   const [sismos, setSismos] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -112,7 +113,23 @@ function Inicio() {
       };
     }
   
-  
+    const descargarCSV = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/inicio/descargar-csv');
+        if (!response.ok) {
+          throw new Error('Error al descargar el archivo');
+        }
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'datos.csv'; // Nombre del archivo a descargar
+        a.click();
+        window.URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('Error:', error);
+      }
+    };
 
   const fetchSismos = async () => {
     try {
@@ -299,6 +316,13 @@ function Inicio() {
             >
               Módulo Educativo sobre Sismos
             </a>
+          </li>
+          <li>
+          <div>
+            <button className="btn-descargar" onClick={descargarCSV}>
+              <FontAwesomeIcon icon={faDownload} /> Exportar Sismos
+            </button>
+          </div>
           </li>
         </ul>
 

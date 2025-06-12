@@ -356,6 +356,23 @@ input:checked + .slider:before {
   color: white;
 }
 
+.btn-descargar {
+  background-color: #1da024;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px; /* Espacio entre el icono y el texto */
+}
+
+.btn-descargar:hover {
+  background-color: #117d18;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .search-container {
