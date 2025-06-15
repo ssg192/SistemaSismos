@@ -5,7 +5,8 @@ import VistaModuloEducativo from "./VistaModuloEducativo";
 import VistaCapacitaciones from "./VistaCapacitaciones";
 import "./components/Inicio.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload } from '@fortawesome/free-solid-svg-icons';
+import { faDownload } from '@fortawesome/free-solid-svg-icons'; 
+
 function Inicio() {
   const [sismos, setSismos] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
@@ -15,7 +16,8 @@ function Inicio() {
   const [mostrarModuloEducativo, setMostrarModuloEducativo] = useState(false);
   const [mostrarCapacitaciones, setMostrarCapacitaciones] = useState(false);
   const [seccionActiva, setSeccionActiva] = useState(null);
-  const [fechaFiltro, setFechaFiltro] = useState("");
+  const [fechaInicio, setFechaInicio] = useState("");
+  const [fechaFin, setFechaFin] = useState("");
   const [magnitudFiltro, setMagnitudFiltro] = useState("");
   const [noResults, setNoResults] = useState(false);
   const [placas, setPlacas] = useState([]);
@@ -113,23 +115,24 @@ function Inicio() {
       };
     }
   
-    const descargarCSV = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/inicio/descargar-csv');
-        if (!response.ok) {
-          throw new Error('Error al descargar el archivo');
-        }
-        const blob = await response.blob();
-        const url = window.URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'datos.csv'; // Nombre del archivo a descargar
-        a.click();
-        window.URL.revokeObjectURL(url);
-      } catch (error) {
-        console.error('Error:', error);
+  
+  const descargarCSV = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/inicio/descargar-csv');
+      if (!response.ok) {
+        throw new Error('Error al descargar el archivo');
       }
-    };
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'datos.csv'; // Nombre del archivo a descargar
+      a.click();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
 
   const fetchSismos = async () => {
     try {
@@ -143,28 +146,75 @@ function Inicio() {
     }
   };
 
-  const handleSismoClick = (sismo) => {
+  //consultar toda la informacion de un sismo al endpoint http://localhost:8080/inicio/{id_sismo}
+  // y mostrarla en el mapa
+ // devuelve el objeto del sismo (data[0]) o null
+  const consultarSismo = async (id) => {
+    try {
+      const response = await fetch(`${URL_API}/${id}`);
+      if (!response.ok) throw new Error("Error en la respuesta del servidor");
+      const data = await response.json();
+      // asumimos que es un array con un solo elemento:
+      return data[0] || null;
+    } catch (error) {
+      console.error("Error al consultar sismo:", error);
+      return null;
+    }
+  };
+
+  const handleSismoClick = async (sismo) => {
+    // sigo guardando el sismo “básico” para la lista y detalles:
     setSismoSeleccionado(sismo);
     setCoordenadas({ lat: sismo.latitud, lng: sismo.longitud });
+  
+    // traigo el detalle enriquecido
+    const detail = await consultarSismo(sismo.id);
+    if (!detail) return;
+    console.log("Detalle del sismo:", detail); // 👈 Debug
+    // 1) Transformar la placa a GeoJSON
+    const featurePlaca = wktMultiPolygonToGeoJSON(detail.geomPlaca, {
+      id: detail.nombrePlaca,
+      nombre: detail.nombrePlaca,
+      descripcion: detail.descripcion
+    });
+    if (featurePlaca) {
+      setPlacas([featurePlaca]);  // si solo quieres mostrar esa placa
+    } else {
+      setPlacas([]);              // o limpiar si no viene WKT válido
+    }
+  
+    // 2) Transformar volcanes
+    // detail.nombreVolcanes, detail.latitudVolcanes, detail.longitudVolcanes → [{…},…]
+    const volcanesDetalle = detail.nombreVolcanes
+      .map((nombre, i) => {
+        const lat = parseFloat(detail.latitudVolcanes[i]);
+        const lng = parseFloat(detail.longitudVolcanes[i]);
+        if (isNaN(lat) || isNaN(lng)) return null;
+        return {
+          id:      `${nombre}-${i}`,
+          descripcion: nombre,
+          lat: lat,
+          lng: lng
+        };
+      })
+      .filter(Boolean);
+      console.log("Volcanes del sismo:", volcanesDetalle); // 👈 Debug
+    setVolcanes(volcanesDetalle);
   };
 
   const handleBuscar = async () => {
-    if (!fechaFiltro || !magnitudFiltro) {
+    if (!fechaInicio || !fechaFin) {
       setNoResults(true);
       setSismos([]);
       return;
     }
 
     try {
-      const response = await fetch(`http://localhost:8080/inicio/${fechaFiltro}/${magnitudFiltro}`, {
-        method: "POST",
+      const response = await fetch(`http://localhost:8080/inicio/Busqueda-by-periodo?FechaFin=${fechaFin}&FechaInicio=${fechaInicio}`, {
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          fecha: fechaFiltro,
-          magnitud: parseFloat(magnitudFiltro),
-        }),
       });
 
       if (!response.ok) throw new Error("Error en la respuesta del servidor");
@@ -180,7 +230,7 @@ function Inicio() {
   };
 
   const handleLimpiar = async () => {
-    setFechaFiltro("");
+    setFechaInicio("");
     setMagnitudFiltro("");
     await fetchSismos();
   };
@@ -223,17 +273,14 @@ function Inicio() {
           <h3 className="search-title">Búsqueda de Sismos</h3>
           <input
             type="date"
-            value={fechaFiltro}
-            onChange={(e) => setFechaFiltro(e.target.value)}
+            value={fechaInicio}
+            onChange={(e) => setFechaInicio(e.target.value)}
             className="search-input"
           />
           <input
-            type="number"
-            min="0"
-            step="0.1"
-            value={magnitudFiltro}
-            onChange={(e) => setMagnitudFiltro(e.target.value)}
-            placeholder="Magnitud"
+            type="date"
+            value={fechaFin}
+            onChange={(e) => setFechaFin(e.target.value)}
             className="search-input"
           />
           <div className="button-group">
@@ -318,11 +365,11 @@ function Inicio() {
             </a>
           </li>
           <li>
-          <div>
-            <button className="btn-descargar" onClick={descargarCSV}>
-              <FontAwesomeIcon icon={faDownload} /> Exportar Sismos
-            </button>
-          </div>
+            <div>
+              <button className="btn-descargar" onClick={descargarCSV}>
+                <FontAwesomeIcon icon={faDownload} /> Exportar Sismos
+              </button>
+            </div>
           </li>
         </ul>
 
