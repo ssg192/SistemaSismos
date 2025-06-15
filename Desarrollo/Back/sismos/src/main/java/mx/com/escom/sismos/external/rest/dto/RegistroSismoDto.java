@@ -22,34 +22,26 @@ import java.time.LocalTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegistroSismoDto {
-    @NotNull(message = "DATOS INCOMPLETOS")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StringConstants.LOCAL_DATE_FORMAT)
     @JsonProperty
     private LocalDate fecha;
     @JsonProperty
-    @NotNull(message = "DATOS INCOMPLETOS")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = StringConstants.LOCAL_TIME_FORMAT)
     @Schema(implementation = String.class)
     private LocalTime hora;
     @JsonProperty
-    @NotNull(message = "DATOS INCOMPLETOS")
     @Positive(message = "DATOS NEGATIVOS")
     private BigDecimal magnitud;
     @JsonProperty
-    @NotNull(message = "DATOS INCOMPLETOS")
     private BigDecimal latitud;
     @JsonProperty
-    @NotNull(message = "DATOS INCOMPLETOS")
     private BigDecimal longitud;
     @JsonProperty
-    @NotNull(message = "DATOS INCOMPLETOS")
     @Positive(message = "DATOS NEGATIVOS")
     private BigDecimal profundidad;
     @JsonProperty
-    @NotNull(message = "DATOS INCOMPLETOS")
     private String referenciaLocalizacion;
     @JsonProperty
-    @NotNull(message = "DATOS INCOMPLETOS")
     private String estatus;
 
     public Sismo toEntity() {

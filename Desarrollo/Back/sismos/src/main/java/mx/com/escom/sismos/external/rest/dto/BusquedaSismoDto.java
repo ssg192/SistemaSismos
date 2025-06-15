@@ -30,6 +30,8 @@ public class BusquedaSismoDto {
     private BigDecimal latitud;
     @JsonProperty
     private BigDecimal longitud;
+    @JsonProperty
+    private String nombrePlaca;
 
     public static BusquedaSismoDto fromEntity(Sismo sismo) {
         return BusquedaSismoDto.builder()
@@ -39,6 +41,7 @@ public class BusquedaSismoDto {
                 .referenciaLocalizacion(sismo.getReferenciaLocalizacion())
                 .latitud(sismo.getLatitud())
                 .longitud(sismo.getLongitud())
+                .nombrePlaca(sismo.getPlacas().getNombre())
                 .build();
     }
 

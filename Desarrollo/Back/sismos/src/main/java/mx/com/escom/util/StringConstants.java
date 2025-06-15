@@ -41,7 +41,8 @@ public class StringConstants {
     public static final String PDF_EXTENSION = ".pdf";
     public static final String CSV_DELIMITER = "|";//No puede ser igual a CSV_SEPARATOR
     public static final String CSV_DELIMITER_REGEX = "\\|";//No puede ser igual a CSV_SEPARATOR
-    public static final String CSV_SEPARATOR = "/";//No puede ser igual a CSV_DELIMITER
+    public static final String CSV_SEPARATOR = "/";
+    public static final String LOCAL_DATE_ISO_FORMAT= "dd/MM/yyyy";//No puede ser igual a CSV_DELIMITER
 
     private StringConstants() {
         super();

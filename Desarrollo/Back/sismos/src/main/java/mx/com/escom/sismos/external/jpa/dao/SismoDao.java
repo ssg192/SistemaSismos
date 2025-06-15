@@ -44,7 +44,8 @@ public class SismoDao implements SismoRepository {
             LIMIT :numPaginas OFFSET :cantidadFilas
             """;
     private static final String QUERY_PARAM_BUSQUEDA_SISMOS = """
-            select  rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion from registros_sismos rs
+            select  rs.id_registros_sismos, rs.magnitud ,rs.hora, rs.latitud, rs.longitud, rs.referencia_localizacion, p.nombre from registros_sismos rs
+            join placas p on p.placa_id = rs.placa_id
             where rs.fecha >= :fechaInicio and rs.fecha <= :fechaFin;
             """;
 
@@ -110,6 +111,9 @@ public class SismoDao implements SismoRepository {
                         .latitud((BigDecimal) busqueda[3])
                         .longitud((BigDecimal) busqueda[4])
                         .referenciaLocalizacion((String) busqueda[5])
+                        .placas(Placas.builder()
+                                .nombre((String)busqueda[6])
+                                .build())
                         .build())
                 .toList();
     }

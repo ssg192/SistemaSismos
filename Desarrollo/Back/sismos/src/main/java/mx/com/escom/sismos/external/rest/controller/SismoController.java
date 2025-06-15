@@ -9,10 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import mx.com.escom.paginacion.PaginacionDTO;
 import mx.com.escom.sismos.core.business.input.SismoService;
-import mx.com.escom.sismos.external.rest.dto.BusquedaSismoDto;
-import mx.com.escom.sismos.external.rest.dto.RegistroSismoDto;
-import mx.com.escom.sismos.external.rest.dto.SismoDto;
-import mx.com.escom.sismos.external.rest.dto.SismoWithVolcanAndPlacaDto;
+import mx.com.escom.sismos.external.rest.dto.*;
 import mx.com.escom.util.error.ErrorMapper;
 import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.annotations.media.Content;
@@ -47,8 +44,8 @@ public class SismoController {
     @GET
     @Path("Busqueda-by-periodo")
     @APIResponse(responseCode = "200", description = "Petición exitosa", content = @Content(schema = @Schema(type = SchemaType.ARRAY, implementation = BusquedaSismoDto.class)))
-    public Response busquedaSismo(@NotNull @QueryParam("FechaInicio")LocalDate fechaInicio,@NotNull @QueryParam("FechaFin")LocalDate fechaFin) {
-        var busqueda = sismoService.busquedaSismo(fechaInicio,fechaFin).stream().map(BusquedaSismoDto::fromEntity).toList();
+    public Response busquedaSismo(@BeanParam FiltrosFechaDTO filtrosFecha) {
+        var busqueda = sismoService.busquedaSismo(filtrosFecha.getInicio(),filtrosFecha.getFin()).stream().map(BusquedaSismoDto::fromEntity).toList();
         return Response.ok(busqueda).build();
 
     }
