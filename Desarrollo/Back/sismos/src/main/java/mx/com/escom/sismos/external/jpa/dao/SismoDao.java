@@ -39,7 +39,7 @@ public class SismoDao implements SismoRepository {
             """;
 
     private static final String QUERY_PARAM_FIND_ALL_SISMOS = """
-            SELECT rs.id_registros_sismos,rs.magnitud, rs.hora, rs.magnitud, rs.estatus,rs.referencia_localizacion
+            SELECT rs.id_registros_sismos,rs.magnitud, rs.hora, rs.fecha, rs.estatus,rs.referencia_localizacion
             FROM registros_sismos rs
             LIMIT :numPaginas OFFSET :cantidadFilas
             """;
@@ -88,9 +88,9 @@ public class SismoDao implements SismoRepository {
                 .getResultStream();
         return result.map(sismos -> Sismo.builder()
                 .id((Integer) sismos[0])
-                .fecha(sismos[1] != null ? ((Date) sismos[1]).toLocalDate() : null)
+                .magnitud((BigDecimal) sismos[1])
                 .hora(sismos[2] != null ? ((Time) sismos[2]).toLocalTime() : null)
-                .magnitud((BigDecimal) sismos[3])
+                .fecha(sismos[3] != null ? ((Date) sismos[3]).toLocalDate() : null)
                 .estatus((String) sismos[4])
                 .referenciaLocalizacion((String) sismos[5])
                 .build()
