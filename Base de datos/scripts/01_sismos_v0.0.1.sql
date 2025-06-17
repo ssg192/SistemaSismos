@@ -135,11 +135,11 @@ SELECT id_volcan, latitud, longitud FROM volcanes;
 DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
 
 -- Determinar radio de afectación según magnitud del sismo
-IF NEW.magnitud <= 4.0 THEN
+IF NEW.magnitud <= 2.0 THEN
 SET radio = 30;
-ELSEIF NEW.magnitud <= 6.0 THEN
+ELSEIF NEW.magnitud <= 4.0 THEN
 SET radio = 70;
-ELSEIF NEW.magnitud <= 7.0 THEN
+ELSEIF NEW.magnitud <= 6.0 THEN
 SET radio = 120;
 ELSE
 SET radio = 200;
