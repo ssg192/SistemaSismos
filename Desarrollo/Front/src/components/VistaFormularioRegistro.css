@@ -1,0 +1,241 @@
+/* contenedor con fondo “radial” y centrado */
+.vf-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 60px 20px;
+    background: radial-gradient(circle at top center, #fff 0%, #f0f0f0 80%);
+    min-height: 100vh;
+  }
+  
+  /* tarjeta con pseudo-fondo de ondas */
+  .vf-card {
+    position: relative;
+    overflow: hidden;
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 520px;
+  }
+  
+  .vf-card::before {
+    content: "";
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: repeating-linear-gradient(
+      45deg,
+      rgba(231, 76, 60, 0.12) 0,
+      rgba(231, 76, 60, 0.12) 1px,
+      transparent 1px,
+      transparent 12px
+    );
+    transform: rotate(20deg);
+  }
+  
+  /* cabecera con icono y título */
+  .vf-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .vf-header-icon {
+    width: 32px;
+    height: 32px;
+  }
+  
+  .vf-header-title {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #e74c3c; /* rojo sismo */
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+  
+  /* formulario y campos */
+  .vf-form {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .vf-form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 16px;
+  }
+  
+  /* Etiqueta con un poco de estilo */
+.vf-form-group > label {
+    margin-bottom: 4px;
+    font-weight: 600;
+    color: #333;
+  }
+  
+  .vf-form-group input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+  }
+  
+  .vf-form-group input:focus {
+    outline: none;
+    border-color: #e74c3c;
+    box-shadow: 0 0 4px rgba(231, 76, 60, 0.3);
+  }
+  
+  /* botones con gradiente “alerta” */
+  .vf-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+  }
+  
+  .vf-btn {
+    padding: 10px 20px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.2s;
+  }
+  
+  .vf-btn:active {
+    transform: scale(0.98);
+  }
+  
+  .vf-btn-primary {
+    background: linear-gradient(135deg, #e74c3c, #f39c12);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.4);
+  }
+  
+  .vf-btn-primary:hover {
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.5);
+  }
+  
+  .vf-btn-secondary {
+    background: #bdc3c7;
+    color: #2c3e50;
+  }
+  
+  .vf-btn-secondary:hover {
+    background: #95a5a6;
+  }
+  
+
+  /* contenedor de respuesta */
+.vf-response {
+    position: relative;
+    z-index: 1;
+    margin-top: 24px;
+    padding: 16px;
+    border-radius: 6px;
+    font-family: monospace;
+  }
+  
+  .vf-success {
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid #2ecc71;
+    color: #27ae60;
+  }
+  
+  .vf-error {
+    background: rgba(231, 76, 60, 0.12);
+    border: 1px solid #e74c3c;
+    color: #c0392b;
+  }
+  
+  .vf-response pre {
+    margin: 8px 0 0;
+    max-height: 200px;
+    overflow: auto;
+  }
+
+  /* Mapa */
+.vf-map {
+    height: 300px;
+    width: 100%;
+    margin-top: 8px;
+    margin-bottom: 16px;
+    border: 2px solid rgba(231, 76, 60, 0.6);
+    border-radius: 6px;
+  }
+  
+  /* Campos lat/long en línea */
+  .vf-form-group-inline {
+    display: flex;
+    gap: 16px;
+  }
+  .vf-form-group-inline > div {
+    flex: 1;
+  }
+  /* CONTENEDOR PRINCIPAL: centra horizontalmente (y opcionalmente vertical) */
+.vf-wrapper {
+    display: flex;
+    justify-content: center;     /* centra horizontal */
+    align-items: center;         /* centra vertical (opcional) */
+    min-height: 100vh;           /* ocupa toda la altura de la ventana */
+    padding: 20px;               /* un poco de espacio alrededor */
+    box-sizing: border-box;
+  }
+  
+  /* TARJETA / CARD: limita el ancho y deja margen automático */
+  .vf-card {
+    width: 100%;
+    max-width: 600px;           /* ajusta a tu gusto */
+    margin: 0 auto;             /* redundante con flex, pero seguro */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 8px;
+    background: #fff;
+    padding: 24px;
+    box-sizing: border-box;
+  }
+  /* Select full-width y diseño personalizado */
+.vf-form-group > select {
+    width: 100%;
+    padding: 8px 12px;
+    font-size: 1rem;
+    line-height: 1.4;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    appearance: none;            /* quita estilo nativo */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII, %3Csvg%20width%3D'10'%20height%3D'6'%20viewBox%3D'0%200%2010%206'%20xmlns%3D'http%3A//www.w3.org/2000/svg'%3E%3Cpath%20d%3D'M0%200l5%206%205-6z'%20fill%3D'%23666'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 10px 6px;
+    transition: border-color 0.2s;
+  }
+  
+  /* Focus state más evidente */
+  .vf-form-group > select:focus {
+    outline: none;
+    border-color: #5b9dd9;
+    box-shadow: 0 0 0 3px rgba(91, 157, 217, 0.3);
+  }
+  
+  /* En caso de que quieras que el grupo de latitud/longitud siga ocupando dos columnas */
+  .vf-form-group-inline {
+    display: flex;
+    gap: 16px;
+  }
+  .vf-form-group-inline > div {
+    flex: 1;
+  }

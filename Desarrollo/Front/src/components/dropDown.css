@@ -1,82 +1,509 @@
+/* Variables CSS para temas claro y oscuro */
+:root {
+  /* Tema claro (por defecto) */
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --sidebar-bg: rgba(240, 240, 240, 0.9);
+  --item-hover-bg: #f4f4f4;
+  --item-active-bg: #3498db;
+  --menu-btn-color: #043155;
+  --switch-slider-bg: #ccc;
+  
+  /* Variables específicas para dropdown */
+  --dropdown-bg: #f5f5f5;
+  --dropdown-border: #ddd;
+  --dropdown-hover-bg: #e9e9e9;
+  --dropdown-menu-bg: #ffffff;
+  --dropdown-shadow: rgba(0, 0, 0, 0.1);
+  --dropdown-item-hover: #f0f0f0;
+  --dropdown-active-bg: #0077cc;
+  --dropdown-active-hover: #0066b3;
+  --dropdown-active-text: #ffffff;
+  
+  /* Variables para paginación */
+  --pagination-border: #e0e0e0;
+  --pagination-btn-bg: #f5f5f5;
+  --pagination-btn-border: #ddd;
+  --pagination-btn-hover: #e8e8e8;
+  --pagination-btn-active: #d8d8d8;
+  --pagination-next-bg: #4CAF50;
+  --pagination-next-hover: #45a049;
+  --pagination-prev-bg: #2196F3;
+  --pagination-prev-hover: #1976D2;
+  --pagination-reset-bg: #FF9800;
+  --pagination-reset-hover: #F57C00;
+}
+
+/* Tema claro */
+[data-theme="light"] {
+  --bg-color: #ffffff;
+  --text-color: #000000;
+  --sidebar-bg: rgba(240, 240, 240, 0.9);
+  --item-hover-bg: #f4f4f4;
+  --item-active-bg: #3498db;
+  --menu-btn-color: #043155;
+  --switch-slider-bg: #ccc;
+  
+  /* Dropdown - tema claro */
+  --dropdown-bg: #f5f5f5;
+  --dropdown-border: #ddd;
+  --dropdown-hover-bg: #e9e9e9;
+  --dropdown-menu-bg: #ffffff;
+  --dropdown-shadow: rgba(0, 0, 0, 0.1);
+  --dropdown-item-hover: #f0f0f0;
+  --dropdown-active-bg: #0077cc;
+  --dropdown-active-hover: #0066b3;
+  --dropdown-active-text: #ffffff;
+  
+  /* Paginación - tema claro */
+  --pagination-border: #e0e0e0;
+  --pagination-btn-bg: #f5f5f5;
+  --pagination-btn-border: #ddd;
+  --pagination-btn-hover: #e8e8e8;
+  --pagination-btn-active: #d8d8d8;
+  --pagination-next-bg: #4CAF50;
+  --pagination-next-hover: #45a049;
+  --pagination-prev-bg: #2196F3;
+  --pagination-prev-hover: #1976D2;
+  --pagination-reset-bg: #FF9800;
+  --pagination-reset-hover: #F57C00;
+}
+
+/* Tema oscuro */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --text-color: #ffffff;
+  --sidebar-bg: rgba(44, 62, 80, 0.9);
+  --item-hover-bg: #333333;
+  --item-active-bg: #3498db;
+  --menu-btn-color: #64c6f0;
+  --switch-slider-bg: #2196f3;
+  
+  /* Dropdown - tema oscuro */
+  --dropdown-bg: #2c2c2c;
+  --dropdown-border: #555;
+  --dropdown-hover-bg: #3a3a3a;
+  --dropdown-menu-bg: #1e1e1e;
+  --dropdown-shadow: rgba(0, 0, 0, 0.3);
+  --dropdown-item-hover: #404040;
+  --dropdown-active-bg: #0d7377;
+  --dropdown-active-hover: #0a5d61;
+  --dropdown-active-text: #ffffff;
+  
+  /* Paginación - tema oscuro */
+  --pagination-border: #444;
+  --pagination-btn-bg: #2c2c2c;
+  --pagination-btn-border: #555;
+  --pagination-btn-hover: #3a3a3a;
+  --pagination-btn-active: #484848;
+  --pagination-next-bg: #388e3c;
+  --pagination-next-hover: #2e7d32;
+  --pagination-prev-bg: #1565c0;
+  --pagination-prev-hover: #0d47a1;
+  --pagination-reset-bg: #ef6c00;
+  --pagination-reset-hover: #e65100;
+}
+
+/* =================
+   ESTILOS DROPDOWN
+   ================= */
+
 /* Contenedor principal */
 .dropdown-container {
-    position: relative;
-    width: 100%;
-    max-width: 300px;
-    margin: 10px 0;
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 10px 0;
+}
+
+/* Botón del dropdown */
+.dropdown-toggle {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: var(--dropdown-bg);
+  border: 1px solid var(--dropdown-border);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  color: var(--text-color);
+}
+
+.dropdown-toggle:hover {
+  background-color: var(--dropdown-hover-bg);
+}
+
+/* Flecha del dropdown */
+.dropdown-arrow {
+  transition: transform 0.2s ease;
+  color: var(--text-color);
+}
+
+.dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+/* Menú desplegable */
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 250px;
+  overflow-y: auto;
+  background-color: var(--dropdown-menu-bg);
+  border: 1px solid var(--dropdown-border);
+  border-radius: 4px;
+  box-shadow: 0 2px 5px var(--dropdown-shadow);
+  z-index: 1000;
+  padding: 0;
+  margin: 5px 0 0 0;
+  list-style: none;
+}
+
+/* Items del menú */
+.dropdown-item {
+  padding: 10px 15px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--text-color);
+}
+
+.dropdown-item:hover {
+  background-color: var(--dropdown-item-hover);
+}
+
+.dropdown-item.active {
+  background-color: var(--dropdown-active-bg);
+  color: var(--dropdown-active-text);
+}
+
+.dropdown-item.active:hover {
+  background-color: var(--dropdown-active-hover);
+}
+
+/* Icono de selección */
+.selected-icon {
+  margin-left: 10px;
+  font-weight: bold;
+  color: inherit;
+}
+
+/* =================
+   ESTILOS LISTA SISMOS
+   ================= */
+
+.sismos-list {
+  width: 100%;
+  max-width: 100%;
+  color: var(--text-color);
+}
+
+.sismos-list h3 {
+  color: var(--text-color);
+  margin: 0 0 15px 0;
+  font-size: 1.2em;
+}
+
+.sismos-list-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sismo-item {
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid var(--dropdown-border);
+  border-radius: 4px;
+  margin-bottom: 5px;
+  background-color: var(--dropdown-menu-bg);
+  color: var(--text-color);
+}
+
+.sismo-item:hover {
+  background-color: var(--dropdown-item-hover);
+  border-color: var(--item-active-bg);
+}
+
+.sismo-item.selected {
+  background-color: var(--dropdown-active-bg);
+  color: var(--dropdown-active-text);
+  border-color: var(--dropdown-active-bg);
+}
+
+.sismo-item.selected:hover {
+  background-color: var(--dropdown-active-hover);
+}
+
+.sismo-info {
+  flex: 1;
+}
+
+.sismo-location {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.sismo-details {
+  display: flex;
+  gap: 15px;
+  font-size: 0.9em;
+  opacity: 0.8;
+}
+
+.sismo-clear {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+/* =================
+   ESTILOS PAGINACIÓN
+   ================= */
+
+.pagination-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--pagination-border);
+  margin-bottom: 10px;
+}
+
+.pagination-controls.bottom {
+  border-bottom: none;
+  border-top: 1px solid var(--pagination-border);
+  margin-bottom: 0;
+  margin-top: 10px;
+}
+
+.pagination-info, .pagination-summary {
+  color: var(--text-color);
+  font-size: 0.9em;
+}
+
+.pagination-info strong, .pagination-summary strong {
+  color: var(--item-active-bg);
+}
+
+.pagination-buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.pagination-btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 8px 12px;
+  background: var(--pagination-btn-bg);
+  border: 1px solid var(--pagination-btn-border);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  user-select: none;
+  color: var(--text-color);
+}
+
+.pagination-btn:hover {
+  background: var(--pagination-btn-hover);
+  border-color: var(--pagination-btn-border);
+  transform: translateY(-1px);
+}
+
+.pagination-btn:active {
+  transform: translateY(0);
+  background: var(--pagination-btn-active);
+}
+
+.pagination-btn.next-btn {
+  background: var(--pagination-next-bg);
+  color: white;
+  border-color: var(--pagination-next-bg);
+}
+
+.pagination-btn.next-btn:hover {
+  background: var(--pagination-next-hover);
+  border-color: var(--pagination-next-hover);
+}
+
+.pagination-btn.prev-btn {
+  background: var(--pagination-prev-bg);
+  color: white;
+  border-color: var(--pagination-prev-bg);
+}
+
+.pagination-btn.prev-btn:hover {
+  background: var(--pagination-prev-hover);
+  border-color: var(--pagination-prev-hover);
+}
+
+.pagination-btn.reset-btn {
+  background: var(--pagination-reset-bg);
+  color: white;
+  border-color: var(--pagination-reset-bg);
+}
+
+.pagination-btn.reset-btn:hover {
+  background: var(--pagination-reset-hover);
+  border-color: var(--pagination-reset-hover);
+}
+
+.btn-icon {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.btn-text {
+  font-size: 13px;
+}
+
+/* =================
+   RESPONSIVE DESIGN
+   ================= */
+
+@media (max-width: 768px) {
+  .dropdown-container {
+    max-width: 100%;
   }
   
-  /* Botón del dropdown */
-  .dropdown-toggle {
-    width: 100%;
-    padding: 10px 15px;
-    background-color: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    transition: all 0.3s ease;
+  .pagination-controls {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
   }
   
-  .dropdown-toggle:hover {
-    background-color: #e9e9e9;
+  .pagination-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
   }
   
-  /* Flecha del dropdown */
-  .dropdown-arrow {
-    transition: transform 0.2s ease;
+  .pagination-btn {
+    flex: 1;
+    min-width: 120px;
+    justify-content: center;
   }
   
-  .dropdown-arrow.open {
-    transform: rotate(180deg);
+  .btn-text {
+    font-size: 12px;
   }
   
-  /* Menú desplegable */
-  .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    max-height: 250px;
-    overflow-y: auto;
-    background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    z-index: 1000;
-    padding: 0;
-    margin: 5px 0 0 0;
-    list-style: none;
+  .sismo-details {
+    flex-direction: column;
+    gap: 5px;
   }
   
-  /* Items del menú */
-  .dropdown-item {
-    padding: 10px 15px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  .sismo-item {
+    padding: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pagination-btn {
+    padding: 6px 8px;
+    font-size: 12px;
   }
   
-  .dropdown-item:hover {
-    background-color: #f0f0f0;
+  .btn-text {
+    display: none;
   }
   
-  .dropdown-item.active {
-    background-color: #0077cc;
-    color: white;
+  .btn-icon {
+    font-size: 14px;
   }
   
-  .dropdown-item.active:hover {
-    background-color: #0066b3;
+  .sismo-item {
+    font-size: 14px;
   }
   
-  /* Icono de selección */
-  .selected-icon {
-    margin-left: 10px;
-    font-weight: bold;
+  .sismos-list h3 {
+    font-size: 1.1em;
+  }
+}
+
+/* =================
+   SCROLLBAR PERSONALIZADO
+   ================= */
+
+.dropdown-menu::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: var(--dropdown-bg);
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background: var(--dropdown-border);
+  border-radius: 3px;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background: var(--item-active-bg);
+}
+
+/* =================
+   ANIMACIONES
+   ================= */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.dropdown-menu {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.sismo-item {
+  animation: fadeIn 0.3s ease-out;
+}
+
+/* =================
+   ESTADOS DE FOCUS
+   ================= */
+
+.dropdown-toggle:focus,
+.dropdown-item:focus,
+.pagination-btn:focus,
+.sismo-item:focus {
+  outline: 2px solid var(--item-active-bg);
+  outline-offset: 2px;
+}
+
+/* =================
+   MODO ALTO CONTRASTE
+   ================= */
+
+@media (prefers-contrast: high) {
+  [data-theme="light"] {
+    --dropdown-border: #000;
+    --text-color: #000;
+    --dropdown-bg: #fff;
   }
   
+  [data-theme="dark"] {
+    --dropdown-border: #fff;
+    --text-color: #fff;
+    --dropdown-bg: #000;
+  }
+}

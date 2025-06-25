@@ -1,0 +1,605 @@
+/* =================
+   VARIABLES CSS PARA TEMAS
+   ================= */
+
+   :root {
+    /* Tema claro (por defecto) */
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --border-color: #ddd;
+    --hover-bg: #f8f9fa;
+    --active-bg: #e3f2fd;
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --secondary-text: #666;
+    --tertiary-text: #888;
+    --success-color: #28a745;
+    --divider-color: #eee;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    /* Variables específicas para lista de sismos */
+    --list-bg: #fff;
+    --list-border: #ddd;
+    --item-bg: #fff;
+    --item-border: #eee;
+    --item-hover-bg: #f8f9fa;
+    --item-active-bg: #e3f2fd;
+    --item-hover-border: #007bff;
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c1c1c1;
+    --scrollbar-thumb-hover: #a8a8a8;
+    
+    /* Variables para paginación */
+    --pagination-border: #e0e0e0;
+    --pagination-btn-bg: #f5f5f5;
+    --pagination-btn-border: #ddd;
+    --pagination-btn-hover: #e8e8e8;
+    --pagination-btn-active: #d8d8d8;
+    --pagination-next-bg: #4CAF50;
+    --pagination-next-hover: #45a049;
+    --pagination-prev-bg: #2196F3;
+    --pagination-prev-hover: #1976D2;
+    --pagination-reset-bg: #FF9800;
+    --pagination-reset-hover: #F57C00;
+  }
+  
+  /* Tema claro */
+  [data-theme="light"] {
+    --bg-color: #ffffff;
+    --text-color: #000000;
+    --border-color: #ddd;
+    --hover-bg: #f8f9fa;
+    --active-bg: #e3f2fd;
+    --primary-color: #007bff;
+    --primary-hover: #0056b3;
+    --secondary-text: #666;
+    --tertiary-text: #888;
+    --success-color: #28a745;
+    --divider-color: #eee;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+    
+    --list-bg: #fff;
+    --list-border: #ddd;
+    --item-bg: #fff;
+    --item-border: #eee;
+    --item-hover-bg: #f8f9fa;
+    --item-active-bg: #e3f2fd;
+    --item-hover-border: #007bff;
+    --scrollbar-track: #f1f1f1;
+    --scrollbar-thumb: #c1c1c1;
+    --scrollbar-thumb-hover: #a8a8a8;
+    
+    --pagination-border: #e0e0e0;
+    --pagination-btn-bg: #f5f5f5;
+    --pagination-btn-border: #ddd;
+    --pagination-btn-hover: #e8e8e8;
+    --pagination-btn-active: #d8d8d8;
+    --pagination-next-bg: #4CAF50;
+    --pagination-next-hover: #45a049;
+    --pagination-prev-bg: #2196F3;
+    --pagination-prev-hover: #1976D2;
+    --pagination-reset-bg: #FF9800;
+    --pagination-reset-hover: #F57C00;
+  }
+  
+  /* Tema oscuro */
+  [data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #ffffff;
+    --border-color: #444;
+    --hover-bg: #2a2a2a;
+    --active-bg: #1a365d;
+    --primary-color: #4dabf7;
+    --primary-hover: #339af0;
+    --secondary-text: #b0b0b0;
+    --tertiary-text: #888;
+    --success-color: #51cf66;
+    --divider-color: #333;
+    --shadow-color: rgba(0, 0, 0, 0.3);
+    
+    --list-bg: #1e1e1e;
+    --list-border: #444;
+    --item-bg: #1e1e1e;
+    --item-border: #333;
+    --item-hover-bg: #2a2a2a;
+    --item-active-bg: #1a365d;
+    --item-hover-border: #4dabf7;
+    --scrollbar-track: #2a2a2a;
+    --scrollbar-thumb: #555;
+    --scrollbar-thumb-hover: #666;
+    
+    --pagination-border: #444;
+    --pagination-btn-bg: #2c2c2c;
+    --pagination-btn-border: #555;
+    --pagination-btn-hover: #3a3a3a;
+    --pagination-btn-active: #484848;
+    --pagination-next-bg: #388e3c;
+    --pagination-next-hover: #2e7d32;
+    --pagination-prev-bg: #1565c0;
+    --pagination-prev-hover: #0d47a1;
+    --pagination-reset-bg: #ef6c00;
+    --pagination-reset-hover: #e65100;
+  }
+  
+  /* =================
+     ESTILOS PRINCIPALES
+     ================= */
+  
+  /* Contenedor principal */
+  .sismos-list-container {
+    width: 100%;
+    max-width: 400px;
+    margin: 10px 0;
+    background-color: var(--bg-color);
+    transition: background-color 0.3s ease;
+  }
+  
+  .sismos-list-title {
+    color: var(--text-color);
+    margin-bottom: 15px;
+    font-size: 18px;
+    border-bottom: 2px solid var(--primary-color);
+    padding-bottom: 5px;
+    transition: all 0.3s ease;
+  }
+  
+  /* Lista de sismos */
+  .sismos-list {
+    max-height: 600px;
+    overflow-y: auto;
+    border: 1px solid var(--list-border);
+    border-radius: 8px;
+    background-color: var(--list-bg);
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px var(--shadow-color);
+  }
+  
+  /* Elementos individuales de la lista */
+  .sismo-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid var(--item-border);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--item-bg);
+    color: var(--text-color);
+  }
+  
+  .sismo-item:last-child {
+    border-bottom: none;
+  }
+  
+  .sismo-item:hover {
+    background-color: var(--item-hover-bg);
+    border-left: 4px solid var(--item-hover-border);
+    padding-left: 11px;
+    transform: translateX(2px);
+  }
+  
+  .sismo-item.active {
+    background-color: var(--item-active-bg);
+    border-left: 4px solid var(--primary-color);
+    padding-left: 11px;
+    font-weight: 500;
+    box-shadow: inset 0 0 0 1px var(--primary-color);
+  }
+  
+  /* Información del sismo */
+  .sismo-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+  
+  .sismo-location {
+    font-size: 16px;
+    color: var(--text-color);
+    font-weight: 500;
+  }
+  
+  .sismo-details {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .sismo-magnitude {
+    font-size: 14px;
+    color: var(--secondary-text);
+  }
+  
+  .sismo-date {
+    font-size: 12px;
+    color: var(--tertiary-text);
+  }
+  
+  .sismo-clear {
+    color: var(--secondary-text);
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  /* Icono de selección */
+  .selected-icon {
+    color: var(--success-color);
+    font-weight: bold;
+    margin-left: 10px;
+    font-size: 16px;
+  }
+  
+  /* =================
+     ESTILOS PAGINACIÓN
+     ================= */
+  
+  /* Estilos específicos para el botón de siguiente página */
+  .next-page-item {
+    background-color: var(--item-hover-bg);
+    border: 2px dashed var(--primary-color);
+    margin-bottom: 10px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+  
+  .next-page-item:hover {
+    background-color: var(--item-active-bg);
+    border-color: var(--primary-hover);
+    transform: translateY(-1px);
+  }
+  
+  .next-icon {
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-left: 10px;
+    font-size: 16px;
+  }
+  
+  .page-info {
+    font-size: 12px;
+    color: var(--secondary-text);
+    font-weight: normal;
+  }
+  
+  /* Controles de paginación */
+  .pagination-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--pagination-border);
+    margin-bottom: 10px;
+  }
+  
+  .pagination-controls.bottom {
+    border-bottom: none;
+    border-top: 1px solid var(--pagination-border);
+    margin-bottom: 0;
+    margin-top: 10px;
+  }
+  
+  .pagination-info, .pagination-summary {
+    color: var(--text-color);
+    font-size: 0.9em;
+  }
+  
+  .pagination-info strong, .pagination-summary strong {
+    color: var(--primary-color);
+  }
+  
+  .pagination-buttons {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  
+  .pagination-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 8px 12px;
+    background: var(--pagination-btn-bg);
+    border: 1px solid var(--pagination-btn-border);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-size: 14px;
+    user-select: none;
+    color: var(--text-color);
+  }
+  
+  .pagination-btn:hover {
+    background: var(--pagination-btn-hover);
+    border-color: var(--pagination-btn-border);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px var(--shadow-color);
+  }
+  
+  .pagination-btn:active {
+    transform: translateY(0);
+    background: var(--pagination-btn-active);
+  }
+  
+  .pagination-btn.next-btn {
+    background: var(--pagination-next-bg);
+    color: white;
+    border-color: var(--pagination-next-bg);
+  }
+  
+  .pagination-btn.next-btn:hover {
+    background: var(--pagination-next-hover);
+    border-color: var(--pagination-next-hover);
+  }
+  
+  .pagination-btn.prev-btn {
+    background: var(--pagination-prev-bg);
+    color: white;
+    border-color: var(--pagination-prev-bg);
+  }
+  
+  .pagination-btn.prev-btn:hover {
+    background: var(--pagination-prev-hover);
+    border-color: var(--pagination-prev-hover);
+  }
+  
+  .pagination-btn.reset-btn {
+    background: var(--pagination-reset-bg);
+    color: white;
+    border-color: var(--pagination-reset-bg);
+  }
+  
+  .pagination-btn.reset-btn:hover {
+    background: var(--pagination-reset-hover);
+    border-color: var(--pagination-reset-hover);
+  }
+  
+  .btn-icon {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .btn-text {
+    font-size: 13px;
+  }
+  
+  /* =================
+     SCROLLBAR PERSONALIZADA
+     ================= */
+  
+  .sismos-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .sismos-list::-webkit-scrollbar-track {
+    background: var(--scrollbar-track);
+    border-radius: 3px;
+  }
+  
+  .sismos-list::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 3px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .sismos-list::-webkit-scrollbar-thumb:hover {
+    background: var(--scrollbar-thumb-hover);
+  }
+  
+  /* Firefox */
+  .sismos-list {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+  }
+  
+  /* =================
+     ANIMACIONES
+     ================= */
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.05);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+  
+  .sismo-item {
+    animation: fadeInUp 0.3s ease-out;
+  }
+  
+  .selected-icon {
+    animation: pulse 0.6s ease-in-out;
+  }
+  
+  .pagination-btn:hover .btn-icon {
+    animation: pulse 0.4s ease-in-out;
+  }
+  
+  /* =================
+     ESTADOS DE FOCUS
+     ================= */
+  
+  .sismo-item:focus,
+  .pagination-btn:focus,
+  .next-page-item:focus {
+    outline: 2px solid var(--primary-color);
+    outline-offset: 2px;
+  }
+  
+  /* =================
+     RESPONSIVE DESIGN
+     ================= */
+  
+  @media (max-width: 768px) {
+    .sismos-list-container {
+      max-width: 100%;
+    }
+    
+    .sismo-item {
+      padding: 10px 12px;
+    }
+    
+    .sismo-details {
+      flex-direction: column;
+    }
+    
+    .pagination-controls {
+      flex-direction: column;
+      gap: 10px;
+      align-items: stretch;
+    }
+    
+    .pagination-buttons {
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    
+    .pagination-btn {
+      flex: 1;
+      min-width: 120px;
+      justify-content: center;
+    }
+    
+    .sismos-list-title {
+      font-size: 16px;
+    }
+    
+    .sismo-location {
+      font-size: 15px;
+    }
+    
+    .sismo-magnitude {
+      font-size: 13px;
+    }
+    
+    .sismo-date {
+      font-size: 11px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .pagination-btn {
+      padding: 6px 8px;
+      font-size: 12px;
+    }
+    
+    .btn-text {
+      display: none;
+    }
+    
+    .btn-icon {
+      font-size: 14px;
+    }
+    
+    .sismo-item {
+      font-size: 14px;
+      padding: 8px 10px;
+    }
+    
+    .sismos-list-title {
+      font-size: 15px;
+    }
+    
+    .sismos-list {
+      max-height: 400px;
+    }
+  }
+  
+  /* =================
+     MODO ALTO CONTRASTE
+     ================= */
+  
+  @media (prefers-contrast: high) {
+    [data-theme="light"] {
+      --border-color: #000;
+      --list-border: #000;
+      --item-border: #000;
+      --text-color: #000;
+      --bg-color: #fff;
+    }
+    
+    [data-theme="dark"] {
+      --border-color: #fff;
+      --list-border: #fff;
+      --item-border: #fff;
+      --text-color: #fff;
+      --bg-color: #000;
+    }
+  }
+  
+  /* =================
+     MODO REDUCCIÓN DE MOVIMIENTO
+     ================= */
+  
+  @media (prefers-reduced-motion: reduce) {
+    .sismo-item,
+    .pagination-btn,
+    .sismos-list,
+    .next-page-item {
+      transition: none;
+      animation: none;
+    }
+  }
+  
+  /* =================
+     ESTADOS ESPECIALES
+     ================= */
+  
+  .sismos-list-container.loading {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+  
+  .sismos-list-container.loading .sismo-item {
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  
+  .sismos-list-container.empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--secondary-text);
+    font-style: italic;
+  }
+  
+  /* =================
+     UTILIDADES
+     ================= */
+  
+  .text-primary {
+    color: var(--primary-color) !important;
+  }
+  
+  .text-secondary {
+    color: var(--secondary-text) !important;
+  }
+  
+  .text-success {
+    color: var(--success-color) !important;
+  }
+  
+  .bg-hover {
+    background-color: var(--hover-bg) !important;
+  }
+  
+  .border-primary {
+    border-color: var(--primary-color) !important;
+  }
+  

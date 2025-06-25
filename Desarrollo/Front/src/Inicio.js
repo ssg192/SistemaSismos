@@ -3,15 +3,18 @@ import MapaMexico from "./MapaMexico";
 import { useTheme } from "./useTheme";
 import VistaModuloEducativo from "./VistaModuloEducativo";
 import VistaCapacitaciones from "./VistaCapacitaciones";
+import VistaFormularioRegistro from './VistaFormularioRegistro'
 import "./components/Inicio.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload, faTowerCell, faSignal } from '@fortawesome/free-solid-svg-icons'; 
 import PlacasDropdown from './PlacasDropDown';
 import VolcanesDropdown from './VolcanesDropDown';
 import SensoresDropdown from './SensoresDropDown';
+import SismosDropdown from './SismosDropDown';
 
 function Inicio() {
   const [sismos, setSismos] = useState([]);
+  const [sismosPaginate, setSismosPaginate] = useState([]);
   const [menuVisible, setMenuVisible] = useState(false);
   const [sismoSeleccionado, setSismoSeleccionado] = useState(null);
   const [coordenadas, setCoordenadas] = useState(null);
@@ -39,22 +42,48 @@ function Inicio() {
   const [sismosOriginales, setSismosOriginales] = useState([]); // Guarda una copia sin filtrar
   const [sismosFiltrados, setSismosFiltrados] = useState([]); // Nuevo estado para sismos filtrados
   const [isVisible, setIsVisible] = useState(true);
+  const [mostrarFormularioRegistro, setMostrarFormularioRegistro] = useState(false);
+  // En tu componente principal
+  const [mostrarSoloSismosDropdown, setMostrarSoloSismosDropdown] = useState(false);
+  const [cantPagina, setCantPagina] = useState(0); // o el valor inicial que tengas
   const URL_API = "http://localhost:8080/inicio";
-
+  //const cantPagina = 0; // Cantidad de filas por página
+  const cantFilas = 5; // Número de página (0 para la primera página
   const fetchSismos = async () => {
     try {
-      const response = await fetch("http://localhost:8080/inicio");
+      const response = await fetch(`http://localhost:8080/inicio?cantidadFilas=${cantPagina}&numeroPagina=${cantFilas}`);
       if (!response.ok) throw new Error("Error en la respuesta del servidor");
       const data = await response.json();
       console.log("Datos obtenidos del endpoint principal:", data); // 👈 Debug
-      setSismos(data);
+      setSismosPaginate(data);
       setSismosOriginales(data); // 👈 Guarda la copia original
       setNoResults(false);
+      console.log("Sismos obtenidos:", data); // 👈 Debug
     } catch (error) {
       console.error("Error al obtener datos:", error);
     }
   };
   // Función que filtra los sismos según la placa seleccionada
+  // Función para incrementar cantPagina
+  const incrementarPagina = () => {
+    setCantPagina(prevCant => prevCant + 5);
+    //volver a consultar al endpoint fetchSismos
+
+  }; 
+  const decrementarPagina = () => {
+    setCantPagina(prevCant => Math.max(prevCant - 5, 0)); // Evita que sea negativo
+    // volver a consultar al endpoint fetchSismos
+  };
+  
+
+  // Función para resetear (opcional)
+  const resetearPagina = () => {
+    setCantPagina(10); // o tu valor inicial
+  };
+  // useEffect que se ejecuta cuando cantPagina cambia
+  useEffect(() => {
+    fetchSismos();
+  }, [cantPagina]); // 👈 Se ejecuta cada vez que cantPagina cambie
 
   useEffect(() => {
     const fetchData = async () => {
@@ -197,7 +226,7 @@ function Inicio() {
     }
   };
 
-
+  
 
   //consultar toda la informacion de un sismo al endpoint http://localhost:8080/inicio/{id_sismo}
   // y mostrarla en el mapa
@@ -217,11 +246,10 @@ function Inicio() {
 
   const handleSismoClick = async (sismo) => {
     // sigo guardando el sismo “básico” para la lista y detalles:
-    setSismoSeleccionado(sismo);
-    setCoordenadas({ lat: sismo.latitud, lng: sismo.longitud });
-  
     // traigo el detalle enriquecido
     const detail = await consultarSismo(sismo.id);
+    setSismoSeleccionado(detail);
+    setCoordenadas({ lat: detail.latitud, lng: detail.longitud });
     if (!detail) return;
     console.log("Detalle del sismo:", detail); // 👈 Debug
     // 1) Transformar la placa a GeoJSON
@@ -284,6 +312,7 @@ function Inicio() {
       setSismos(data);
       setNoResults(data.length === 0);
       setMostrarSelectPlacas(true);
+      console.log("Sismos filtrados:", data); // 👈 Debug
     } catch (error) {
       console.error("Error al filtrar datos:", error);
       setNoResults(true);
@@ -306,6 +335,14 @@ function Inicio() {
     return <VistaCapacitaciones onVolver={() => setMostrarCapacitaciones(false)} />;
   }
 
+  // Si se activa el módulo de formulario
+  if (mostrarFormularioRegistro) {
+    return (
+      <VistaFormularioRegistro
+        onVolver={() => setMostrarFormularioRegistro(false)}
+      />
+    )
+  }
   return (
     <div className="container" data-theme={theme}>
       {/* Botón lupa para mostrar búsqueda */}
@@ -440,71 +477,121 @@ function Inicio() {
       {/* Menú lateral */}
       <div className={`sidebar ${menuVisible ? "visible" : ""}`}>
   <h2>Menú</h2>
-  <ul>
-    <li>
-      <a href="#" onClick={(e) => { e.preventDefault(); setSeccionActiva("sismos"); }}>
-        Sismos Recientes
-      </a>
-    </li>
-    
-    {/* Nueva sección de selección de placas */}
-    <PlacasDropdown 
-      placas={constPlacas} // Usar las placas originales sin filtrar
-      placaSeleccionada={placaSeleccionada}
-      setPlacaSeleccionada={setPlacaSeleccionada}
-      setPlacas={setPlacas}
-    />
-    {/* Nueva sección de selección de volcanes */}
-    <VolcanesDropdown 
-      volcanes={constVolcanes} // Usar las placas originales sin filtrar
-      volcanSelect={volcanSelect}
-      setVolcanSelect={setVolcanSelect}
-      setVolcanes={setVolcanes}
-    />
-    {/* Nueva sección de selección de sensores */}
-    <SensoresDropdown 
-      sensores={constSensores} // Usar las placas originales sin filtrar
-      sensorSelect={sensorSelect}
-      setSensorSelect={setSensorSelect}
-      setSensores={setSensores}
-    />
-    {/* Resto del menú... */}
-    <li>
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          setMenuVisible(false);
-          setMostrarCapacitaciones(true);
-        }}
+  
+  {/* Mostrar menú normal cuando NO está en modo solo sismos */}
+  {!mostrarSoloSismosDropdown && (
+    <ul>
+      <li>
+        <a 
+          href="#" 
+          onClick={(e) => { 
+            e.preventDefault(); 
+            setSeccionActiva("sismos");
+            setMostrarSoloSismosDropdown(true); // Activar modo solo sismos
+          }}
+        >
+          Sismos Recientes
+        </a>
+      </li>
+      
+      {/* Todos los otros elementos del menú */}
+      <PlacasDropdown 
+        placas={constPlacas}
+        placaSeleccionada={placaSeleccionada}
+        setPlacaSeleccionada={setPlacaSeleccionada}
+        setPlacas={setPlacas}
+      />
+      
+      <VolcanesDropdown 
+        volcanes={constVolcanes}
+        volcanSelect={volcanSelect}
+        setVolcanSelect={setVolcanSelect}
+        setVolcanes={setVolcanes}
+      />
+      
+      <SensoresDropdown 
+        sensores={constSensores}
+        sensorSelect={sensorSelect}
+        setSensorSelect={setSensorSelect}
+        setSensores={setSensores}
+      />
+      
+      <li>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            setMenuVisible(false);
+            setMostrarCapacitaciones(true);
+          }}
+        >
+          Capacitaciones y Simulacros
+        </a>
+      </li>
+      
+      <li>
+        <a
+          href="#"
+          onClick={(e) => {
+            e.preventDefault();
+            setMenuVisible(false);
+            setMostrarModuloEducativo(true);
+          }}
+        >
+          Módulo Educativo sobre Sismos
+        </a>
+      </li>
+      
+      <li>
+        <a
+          href="#"
+          onClick={e => {
+            e.preventDefault()
+            setMostrarFormularioRegistro(true)
+          }}
+        >
+          Nuevo Registro
+        </a>
+      </li>
+      
+      <li>
+        <button className="btn-descargar" onClick={descargarCSV}>
+          <FontAwesomeIcon icon={faDownload} /> Exportar Sismos
+        </button>
+      </li>
+    </ul>
+  )}
+
+  {/* Mostrar solo el dropdown de sismos cuando está en modo solo sismos */}
+  {mostrarSoloSismosDropdown && (
+    <div className="sismos-only-section">
+      {/* Botón para volver al menú principal */}
+      <button 
+        className="btn-volver"
+        onClick={() => setMostrarSoloSismosDropdown(false)}
       >
-        Capacitaciones y Simulacros
-      </a>
-    </li>
-    <li>
-      <a
-        href="#"
-        onClick={(e) => {
-          e.preventDefault();
-          setMenuVisible(false);
-          setMostrarModuloEducativo(true);
-        }}
-      >
-        Módulo Educativo sobre Sismos
-      </a>
-    </li>
-    <li>
-      <button className="btn-descargar" onClick={descargarCSV}>
-        <FontAwesomeIcon icon={faDownload} /> Exportar Sismos
+        ← Volver al menú
       </button>
-    </li>
-  </ul>
+      
+      <SismosDropdown 
+        sismos={sismosPaginate}
+        sismoSeleccionado={sismoSeleccionado}
+        setSismoSeleccionado={setSismoSeleccionado}
+        handleSismoClick={handleSismoClick}
+        onIncrementarPagina={incrementarPagina}
+        onDecrementarPagina={decrementarPagina} // 👈 Nueva prop
+        onResetearPagina={decrementarPagina} // 👈 Opcional
+        cantPagina={cantPagina}
+      />
+    </div>
+  )}
 
   {/* Contenido de sismos (se mantiene igual) */}
   <div className="content">
-    {/* ... (tu código existente de sismos) ... */}
+    {/* ... tu código existente ... */}
   </div>
 </div>
+
 
 
       {/* Botón menú hamburguesa */}
