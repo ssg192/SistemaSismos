@@ -70,7 +70,7 @@ export default function VistaFormularioRegistro({ onVolver }) {
 
     try {
       const resp = await fetch(
-        'http://localhost:8080/inicio/registroSismo',
+        'http://localhost:9090/inicio/registroSismo',
         {
           method: 'POST',
           headers: {

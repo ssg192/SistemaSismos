@@ -46,12 +46,12 @@ function Inicio() {
   // En tu componente principal
   const [mostrarSoloSismosDropdown, setMostrarSoloSismosDropdown] = useState(false);
   const [cantPagina, setCantPagina] = useState(0); // o el valor inicial que tengas
-  const URL_API = "http://localhost:8080/inicio";
+  const URL_API = "http://localhost:9090/inicio";
   //const cantPagina = 0; // Cantidad de filas por página
   const cantFilas = 5; // Número de página (0 para la primera página
   const fetchSismos = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/inicio?cantidadFilas=${cantPagina}&numeroPagina=${cantFilas}`);
+      const response = await fetch(`http://localhost:9090/inicio?cantidadFilas=${cantPagina}&numeroPagina=${cantFilas}`);
       if (!response.ok) throw new Error("Error en la respuesta del servidor");
       const data = await response.json();
       console.log("Datos obtenidos del endpoint principal:", data); // 👈 Debug
@@ -92,7 +92,7 @@ function Inicio() {
         // Hacemos fetch en paralelo
         await Promise.all([
           fetchSismos(),
-          fetch("http://localhost:8080/catalogos/placas")
+          fetch("http://localhost:9090/catalogos/placas")
             .then((res) => res.json())
             .then((data) => {
               const geojsonFeatures = data?.map((placa) =>
@@ -107,7 +107,7 @@ function Inicio() {
               setConstPlacas(geojsonFeatures); // Guardar las placas originales sin filtrar 
             }),
           
-          fetch("http://localhost:8080/catalogos/volcanes")
+          fetch("http://localhost:9090/catalogos/volcanes")
             .then(r => r.json())
             .then(data => {
               const parsed = data
@@ -123,7 +123,7 @@ function Inicio() {
               console.log("Volcanes obtenidos:", parsed); // 👈 Debug
             }),
           
-          fetch('http://localhost:8080/inicio/sensores')
+          fetch('http://localhost:9090/inicio/sensores')
             .then(res => {
               if (!res.ok) throw new Error('Error al cargar sensores');
               return res.json();
@@ -210,7 +210,7 @@ function Inicio() {
   
   const descargarCSV = async () => {
     try {
-      const response = await fetch('http://localhost:8080/inicio/descargar-csv');
+      const response = await fetch('http://localhost:9090/inicio/descargar-csv');
       if (!response.ok) {
         throw new Error('Error al descargar el archivo');
       }
@@ -298,7 +298,7 @@ function Inicio() {
     const [anio2, mes2, dia2] = fechaInicio.split('-');
     const fechaInicioFormateada = `${dia2}/${mes2}/${anio2}`;
     try {
-      const response = await fetch(`http://localhost:8080/inicio/Busqueda-by-periodo?fin=${fechaFinFormateada}&inicio=${fechaInicioFormateada}`, {
+      const response = await fetch(`http://localhost:9090/inicio/Busqueda-by-periodo?fin=${fechaFinFormateada}&inicio=${fechaInicioFormateada}`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",

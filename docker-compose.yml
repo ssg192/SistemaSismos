@@ -7,7 +7,7 @@ services:
       MYSQL_DATABASE: sismos
       MYSQL_PASSWORD: root
     volumes:
-      - ./Desarrollo/Back/sismos/src/main/scripts:/docker-entrypoint-initdb.d
+      - ./Base de datos/scripts:/docker-entrypoint-initdb.d
     ports:
       - "3307:3306"
     networks:
