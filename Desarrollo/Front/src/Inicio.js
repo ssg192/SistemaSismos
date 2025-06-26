@@ -78,7 +78,7 @@ function Inicio() {
 
   // Función para resetear (opcional)
   const resetearPagina = () => {
-    setCantPagina(10); // o tu valor inicial
+    setCantPagina(0); // o tu valor inicial
   };
   // useEffect que se ejecuta cuando cantPagina cambia
   useEffect(() => {
@@ -476,7 +476,7 @@ function Inicio() {
 
       {/* Menú lateral */}
       <div className={`sidebar ${menuVisible ? "visible" : ""}`}>
-  <h2>Menú</h2>
+        <h2>Menú</h2>
   
   {/* Mostrar menú normal cuando NO está en modo solo sismos */}
   {!mostrarSoloSismosDropdown && (
@@ -580,7 +580,7 @@ function Inicio() {
         handleSismoClick={handleSismoClick}
         onIncrementarPagina={incrementarPagina}
         onDecrementarPagina={decrementarPagina} // 👈 Nueva prop
-        onResetearPagina={decrementarPagina} // 👈 Opcional
+        onResetearPagina={resetearPagina} // 👈 Opcional
         cantPagina={cantPagina}
       />
     </div>
