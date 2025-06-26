@@ -1,0 +1,14 @@
+{
+  "files": {
+    "main.css": "/static/css/main.ceae1257.css",
+    "main.js": "/static/js/main.b63cd82b.js",
+    "static/media/volcano.svg": "/static/media/volcano.9e5dcfa4977214bb2a8fbbe042e10b57.svg",
+    "index.html": "/index.html",
+    "main.ceae1257.css.map": "/static/css/main.ceae1257.css.map",
+    "main.b63cd82b.js.map": "/static/js/main.b63cd82b.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ceae1257.css",
+    "static/js/main.b63cd82b.js"
+  ]
+}
