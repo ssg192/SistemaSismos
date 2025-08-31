@@ -1,4 +1,4 @@
-name: Notificar a Discord estilo Webhook
+name: Notificar a Discord estilo embed
 
 on:
   push:
@@ -9,20 +9,26 @@ jobs:
     steps:
       - name: Enviar notificación a Discord
         run: |
-          COMMIT_LIST=""
-          for COMMIT in $(jq -r '.commits[].id' <<< '${{ toJson(github.event) }}'); do
-            MESSAGE=$(jq -r ".commits[] | select(.id==\"$COMMIT\") | .message" <<< '${{ toJson(github.event) }}')
-            URL=$(jq -r ".commits[] | select(.id==\"$COMMIT\") | .url" <<< '${{ toJson(github.event) }}')
-            AUTHOR=$(jq -r ".commits[] | select(.id==\"$COMMIT\") | .author.name" <<< '${{ toJson(github.event) }}')
-            SHORT_COMMIT=${COMMIT:0:7}
-            COMMIT_LIST="$COMMIT_LIST\n[$SHORT_COMMIT]($URL): $MESSAGE – $AUTHOR"
-          done
+          COMMIT_FIELDS=$(jq -c '.commits[] | {name: .id[0:7], value: (.message + " – " + .author.name), inline: false}' <<< '${{ toJson(github.event) }}' | jq -s .)
 
-          PAYLOAD=$(jq -n \
-            --arg content "👤 *${{ github.actor }}* pushed to **${{ github.ref_name }}** in **${{ github.repository }}**\n🔗 [Compare changes](${{ github.event.compare }})\n$COMMIT_LIST" \
-            '{content: $content}')
+          jq -n \
+            --arg repo "${{ github.repository }}" \
+            --arg branch "${{ github.ref_name }}" \
+            --arg actor "${{ github.actor }}" \
+            --arg compare "${{ github.event.compare }}" \
+            --argjson fields "$COMMIT_FIELDS" \
+            '{
+              embeds: [{
+                title: "Push en \($repo):\($branch)",
+                url: $compare,
+                color: 16711680,
+                author: { name: $actor },
+                fields: $fields,
+                footer: { text: "GitHub Actions" }
+              }]
+            }' > payload.json
 
           curl -H "Content-Type: application/json" \
-               -d "$PAYLOAD" \
+               -d @payload.json \
                ${{ secrets.DISCORD_WEBHOOK }}
 
