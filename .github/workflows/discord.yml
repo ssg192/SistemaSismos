@@ -5,7 +5,7 @@ on:
     types: [closed]
   push:
     branches:
-      - developer  # rama principal
+      - developer
 
 jobs:
   discordNotification:
@@ -13,37 +13,46 @@ jobs:
     steps:
       - name: Enviar notificación a Discord
         run: |
-          # Determinar tipo de evento y construir título/descripcion
+          # Variables del evento
+          ACTOR="${GITHUB_ACTOR}"
+          AVATAR="${GITHUB_EVENT_SENDER_AVATAR_URL}"
+          REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
+
           if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            # Solo PR mergeado a developer
+            # Filtrar solo PR mergeado a developer
             if [ "${GITHUB_EVENT_PULL_REQUEST_MERGED}" != "true" ] || [ "${GITHUB_EVENT_PULL_REQUEST_BASE_REF}" != "developer" ]; then
               echo "No es un PR mergeado a developer, saliendo..."
               exit 0
             fi
-            # Obtener commits del PR con link
+            TYPE="PR mergeado"
+            BRANCH="${GITHUB_EVENT_PULL_REQUEST_BASE_REF}"
+            SOURCE_BRANCH="${GITHUB_EVENT_PULL_REQUEST_HEAD_REF}"
+            COMPARE_URL="${GITHUB_EVENT_PULL_REQUEST_HTML_URL}"
+            TITLE="$TYPE: $BRANCH – [Repo]($REPO_URL)"
+            DESCRIPTION="Mergeado desde $SOURCE_BRANCH por $ACTOR"
+
+            # Listado de commits del PR
             COMMIT_FIELDS=$(curl -s "${GITHUB_EVENT_PULL_REQUEST_COMMITS_URL}" \
               | jq -c '.[] | {name: ("Commit " + .sha[0:7]), value: ("[" + .commit.message + "](" + .url + ") – " + .author.name), inline: false}' \
               | jq -s .)
-            BRANCH="${GITHUB_EVENT_PULL_REQUEST_BASE_REF}"
-            COMPARE_URL="${GITHUB_EVENT_PULL_REQUEST_HTML_URL}"
-            TITLE="PR mergeado: ${BRANCH} – [Repositorio](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY})"
-            DESCRIPTION="Mergeado desde ${GITHUB_EVENT_PULL_REQUEST_HEAD_REF} por ${GITHUB_ACTOR}"
           else
             # Push directo a developer
-            COMMIT_FIELDS=$(jq -c '.commits[] | {name: ("Commit " + .id[0:7]), value: ("[" + .message + "](" + .url + ") – " + .author.name), inline: false}' <<< "${GITHUB_EVENT_PATH}" | jq -s .)
+            TYPE="Push directo"
             BRANCH="${GITHUB_REF_NAME}"
             COMPARE_URL="${GITHUB_EVENT_COMPARE}"
-            TITLE="Push directo: ${BRANCH} – [Repositorio](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY})"
-            DESCRIPTION="Commits por ${GITHUB_ACTOR}"
+            TITLE="$TYPE: $BRANCH – [Repo]($REPO_URL)"
+            DESCRIPTION="Commits por $ACTOR"
+
+            # Listado de commits del push
+            COMMIT_FIELDS=$(jq -c '.commits[] | {name: ("Commit " + .id[0:7]), value: ("[" + .message + "](" + .url + ") – " + .author.name), inline: false}' <<< "${GITHUB_EVENT_PATH}" | jq -s .)
           fi
 
-          # Crear payload JSON con embed, incluyendo thumbnail
+          # Crear payload JSON con embed y thumbnail del usuario
           jq -n \
             --arg title "$TITLE" \
             --arg description "$DESCRIPTION" \
-            --arg branch "$BRANCH" \
-            --arg actor "${GITHUB_ACTOR}" \
-            --arg avatar "${GITHUB_EVENT_SENDER_AVATAR_URL}" \
+            --arg actor "$ACTOR" \
+            --arg avatar "$AVATAR" \
             --arg compare "$COMPARE_URL" \
             --argjson fields "$COMMIT_FIELDS" \
             '{
