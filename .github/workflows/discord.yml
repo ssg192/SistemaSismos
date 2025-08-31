@@ -1,28 +1,30 @@
 name: Notificar a Discord estilo embed
 
 on:
-  push:
+  pull_request:
+    types: [closed]
 
 jobs:
   discordNotification:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'developer'
     runs-on: ubuntu-latest
     steps:
       - name: Enviar notificación a Discord
         run: |
-          # Construir lista de commits en formato embed fields
-          COMMIT_FIELDS=$(jq -c '.commits[] | {name: .id[0:7], value: (.message + " – " + .author.name), inline: false}' <<< '${{ toJson(github.event) }}' | jq -s .)
+          # Construir lista de commits del PR en formato embed fields
+          COMMIT_FIELDS=$(jq -c '.pull_request.commits_url | @uri' <<< '${{ toJson(github.event) }}' | xargs -I {} curl -s {} | jq -c '.[] | {name: .sha[0:7], value: (.commit.message + " – " + .author.name), inline: false}' | jq -s .)
 
           # Crear payload JSON con embed
           jq -n \
             --arg repo "${{ github.repository }}" \
-            --arg branch "${{ github.ref_name }}" \
+            --arg branch "${{ github.event.pull_request.base.ref }}" \
             --arg actor "${{ github.actor }}" \
             --arg avatar "${{ github.event.sender.avatar_url }}" \
-            --arg compare "${{ github.event.compare }}" \
+            --arg compare "${{ github.event.pull_request.html_url }}" \
             --argjson fields "$COMMIT_FIELDS" \
             '{
               embeds: [{
-                title: "Push en \($repo):\($branch)",
+                title: "PR mergeado en \($repo):\($branch)",
                 url: $compare,
                 color: 7506394,
                 author: { name: $actor, icon_url: $avatar },
