@@ -1,0 +1,38 @@
+name: Notify Discord on Push
+
+on:
+  push:
+
+jobs:
+  discord:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send commit info to Discord
+        uses: Ilshidur/action-discord@master
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        with:
+          args: |
+            {
+              "embeds": [
+                {
+                  "title": "🚀 Nuevo push en ${{ github.repository }}",
+                  "description": "**Autor:** ${{ github.actor }}\n**Mensaje:** ${{ github.event.head_commit.message }}",
+                  "color": 5814783,
+                  "fields": [
+                    {
+                      "name": "Rama",
+                      "value": "${{ github.ref_name }}",
+                      "inline": true
+                    },
+                    {
+                      "name": "Commit",
+                      "value": "[Ver cambios](${{ github.event.head_commit.url }})",
+                      "inline": true
+                    }
+                  ],
+                  "timestamp": "${{ github.event.head_commit.timestamp }}"
+                }
+              ]
+            }
+
