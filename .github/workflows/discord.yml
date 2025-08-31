@@ -7,8 +7,7 @@ jobs:
   discordNotification:
     runs-on: ubuntu-latest
     steps:
-      - name: Construir mensaje
-        id: build_msg
+      - name: Enviar notificación a Discord
         run: |
           COMMIT_LIST=""
           for COMMIT in $(jq -r '.commits[].id' <<< '${{ toJson(github.event) }}'); do
@@ -19,15 +18,11 @@ jobs:
             COMMIT_LIST="$COMMIT_LIST\n[$SHORT_COMMIT]($URL): $MESSAGE – $AUTHOR"
           done
 
-          echo "MESSAGE=👤 **${{ github.actor }}** pushed to **${{ github.ref_name }}** in **${{ github.repository }}**
-          🔗 [Compare changes](${{ github.event.compare }})
-          $COMMIT_LIST" >> $GITHUB_ENV
+          PAYLOAD=$(jq -n \
+            --arg content "👤 *${{ github.actor }}* pushed to **${{ github.ref_name }}** in **${{ github.repository }}**\n🔗 [Compare changes](${{ github.event.compare }})\n$COMMIT_LIST" \
+            '{content: $content}')
 
-      - name: Enviar a Discord
-        uses: Ilshidur/action-discord@master
-        with:
-          args: ${{ env.MESSAGE }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-
+          curl -H "Content-Type: application/json" \
+               -d "$PAYLOAD" \
+               ${{ secrets.DISCORD_WEBHOOK }}
 
