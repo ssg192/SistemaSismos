@@ -9,25 +9,29 @@ jobs:
     steps:
       - name: Enviar notificación a Discord
         run: |
+          # Construir lista de commits en formato embed fields
           COMMIT_FIELDS=$(jq -c '.commits[] | {name: .id[0:7], value: (.message + " – " + .author.name), inline: false}' <<< '${{ toJson(github.event) }}' | jq -s .)
 
+          # Crear payload JSON con embed
           jq -n \
             --arg repo "${{ github.repository }}" \
             --arg branch "${{ github.ref_name }}" \
             --arg actor "${{ github.actor }}" \
+            --arg avatar "${{ github.event.sender.avatar_url }}" \
             --arg compare "${{ github.event.compare }}" \
             --argjson fields "$COMMIT_FIELDS" \
             '{
               embeds: [{
                 title: "Push en \($repo):\($branch)",
                 url: $compare,
-                color: 16711680,
-                author: { name: $actor },
+                color: 7506394,
+                author: { name: $actor, icon_url: $avatar },
                 fields: $fields,
                 footer: { text: "GitHub Actions" }
               }]
             }' > payload.json
 
+          # Enviar a Discord
           curl -H "Content-Type: application/json" \
                -d @payload.json \
                ${{ secrets.DISCORD_WEBHOOK }}
