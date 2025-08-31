@@ -19,5 +19,5 @@ public class Sensores {
     private BigDecimal latitud;
     private BigDecimal longitud;
     private String red;
-    private String nombrePruebas4;
+    private String nombrePruebas5;
 }
