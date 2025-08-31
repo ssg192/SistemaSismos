@@ -1,7 +1,11 @@
 name: Notificar a Discord estilo embed
 
 on:
+  pull_request:
+    types: [closed]
   push:
+    branches:
+      - developer  # rama principal
 
 jobs:
   discordNotification:
@@ -9,20 +13,39 @@ jobs:
     steps:
       - name: Enviar notificación a Discord
         run: |
-          # Construir lista de commits en formato embed fields
-          COMMIT_FIELDS=$(jq -c '.commits[] | {name: .id[0:7], value: (.message + " – " + .author.name), inline: false}' <<< '${{ toJson(github.event) }}' | jq -s .)
+          # Determinar tipo de evento
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            # Solo PR mergeado a developer
+            if [ "${GITHUB_EVENT_PULL_REQUEST_MERGED}" != "true" ] || [ "${GITHUB_EVENT_PULL_REQUEST_BASE_REF}" != "developer" ]; then
+              echo "No es un PR mergeado a developer, saliendo..."
+              exit 0
+            fi
+            # Obtener commits del PR
+            COMMIT_FIELDS=$(curl -s "${GITHUB_EVENT_PULL_REQUEST_COMMITS_URL}" \
+              | jq -c '.[] | {name: .sha[0:7], value: (.commit.message + " – " + .author.name), inline: false}' \
+              | jq -s .)
+            BRANCH="${GITHUB_EVENT_PULL_REQUEST_BASE_REF}"
+            COMPARE_URL="${GITHUB_EVENT_PULL_REQUEST_HTML_URL}"
+            TITLE="PR mergeado en ${GITHUB_REPOSITORY}:${BRANCH}"
+          else
+            # Push directo a developer
+            COMMIT_FIELDS=$(jq -c '.commits[] | {name: .id[0:7], value: (.message + " – " + .author.name), inline: false}' <<< "${GITHUB_EVENT_PATH}" | jq -s .)
+            BRANCH="${GITHUB_REF_NAME}"
+            COMPARE_URL="${GITHUB_EVENT_COMPARE}"
+            TITLE="Push en ${GITHUB_REPOSITORY}:${BRANCH}"
+          fi
 
           # Crear payload JSON con embed
           jq -n \
-            --arg repo "${{ github.repository }}" \
-            --arg branch "${{ github.ref_name }}" \
-            --arg actor "${{ github.actor }}" \
-            --arg avatar "${{ github.event.sender.avatar_url }}" \
-            --arg compare "${{ github.event.compare }}" \
+            --arg title "$TITLE" \
+            --arg branch "$BRANCH" \
+            --arg actor "${GITHUB_ACTOR}" \
+            --arg avatar "${GITHUB_EVENT_SENDER_AVATAR_URL}" \
+            --arg compare "$COMPARE_URL" \
             --argjson fields "$COMMIT_FIELDS" \
             '{
               embeds: [{
-                title: "Push en \($repo):\($branch)",
+                title: $title,
                 url: $compare,
                 color: 7506394,
                 author: { name: $actor, icon_url: $avatar },
