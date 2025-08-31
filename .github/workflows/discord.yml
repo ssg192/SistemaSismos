@@ -17,7 +17,7 @@ jobs:
           REPO_URL="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}"
 
           if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            # Solo PR mergeado a developer
+            # Filtrar solo PR mergeado a developer
             if [ "$(jq -r '.pull_request.merged' "$GITHUB_EVENT_PATH")" != "true" ] || [ "$(jq -r '.pull_request.base.ref' "$GITHUB_EVENT_PATH")" != "developer" ]; then
               echo "No es un PR mergeado a developer, saliendo..."
               exit 0
@@ -33,23 +33,25 @@ jobs:
             # Avatar del autor del PR
             AVATAR=$(jq -r '.pull_request.user.avatar_url' "$GITHUB_EVENT_PATH")
 
-            # Listado de commits del PR con link
+            # Listado de commits del PR
             COMMIT_FIELDS=$(curl -s "$(jq -r '.pull_request.commits_url' "$GITHUB_EVENT_PATH")" \
               | jq -c '.[] | {name: ("Commit " + .sha[0:7]), value: ("[" + .commit.message + "](" + .url + ") – " + .author.name), inline: false}' \
               | jq -s .)
           else
-            # Push directo a developer
             TYPE="Push directo"
             BRANCH=$(jq -r '.ref' "$GITHUB_EVENT_PATH" | sed 's|refs/heads/||')
             COMPARE_URL=$(jq -r '.compare' "$GITHUB_EVENT_PATH")
             TITLE="$TYPE: $BRANCH – [Repo]($REPO_URL)"
             DESCRIPTION="Commits por $ACTOR"
 
-            # Avatar del usuario que hizo el push
+            # Avatar del usuario que hizo push
             AVATAR="https://github.com/${GITHUB_ACTOR}.png"
 
             # Listado de commits del push con link manual
-            COMMIT_FIELDS=$(jq -c '.commits[] | {name: ("Commit " + (.id[0:7])), value: ("[" + .message + "]('\"$REPO_URL\"'/commit/" + .id + ") – " + .author.name), inline: false}' "$GITHUB_EVENT_PATH" | jq -s .)
+            COMMIT_FIELDS=$(jq -c '.commits[] | 
+              {name: ("Commit " + (.id[0:7])), 
+               value: ("[" + .message + "]('"$REPO_URL"'/commit/" + .id + ") – " + .author.name), 
+               inline: false}' "$GITHUB_EVENT_PATH" | jq -s .)
           fi
 
           # Crear payload JSON con embed y thumbnail del usuario
@@ -77,4 +79,5 @@ jobs:
           curl -H "Content-Type: application/json" \
                -d @payload.json \
                ${{ secrets.DISCORD_WEBHOOK }}
+
 
